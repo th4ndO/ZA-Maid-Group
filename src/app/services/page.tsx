@@ -35,7 +35,7 @@ export default function ServicesPage() {
             <p className="label">What we do</p>
             <h2>Our services</h2>
           </div>
-          <div className="grid grid--3">
+          <div className="grid grid--3 carousel">
             {services.map((s) => (
               <article key={s.slug} className="card card--band">
                 <h3>{s.title}</h3>

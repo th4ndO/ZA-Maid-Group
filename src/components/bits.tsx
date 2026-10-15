@@ -71,6 +71,16 @@ export function OfferBadge() {
   );
 }
 
+// Compact version of the offer for phones, where the big circle would crowd the hero.
+export function OfferPill() {
+  if (!firstCleanOffer.enabled) return null;
+  return (
+    <p className="offer-pill">
+      <strong>{firstCleanOffer.percent}% off</strong> your first clean
+    </p>
+  );
+}
+
 export function CtaSection({ title, lede }: { title: string; lede: string }) {
   return (
     <section className="section section--mist">

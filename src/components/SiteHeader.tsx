@@ -18,7 +18,7 @@ export function SiteHeader() {
       <div className="wrap site-header__inner">
         <Link href="/" className="site-header__logo" aria-label="ZA Maid Group, home">
           {/* eslint-disable-next-line @next/next/no-img-element -- brand SVG, no optimisation needed */}
-          <img src="/brand/logo-horizontal-navy.svg" alt="" width={3340} height={565} />
+          <img src="/brand/logo-horizontal-navy.svg" alt="" width={3340} height={565} fetchPriority="high" />
         </Link>
         <button
           type="button"

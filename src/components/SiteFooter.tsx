@@ -58,9 +58,14 @@ export function SiteFooter() {
         </div>
         <div className="site-footer__base">
           <span>
-            © {year} {business.name}. Payment via {business.payment}.
+            © {year} {business.name}. <span className="site-footer__tagline">{business.tagline}</span>
           </span>
-          <span className="site-footer__tagline">{business.tagline}</span>
+          <span>
+            Website by{" "}
+            <a href="https://www.instagram.com/profound_productionss/" target="_blank" rel="noopener">
+              Profound Productions
+            </a>
+          </span>
         </div>
       </div>
     </footer>
