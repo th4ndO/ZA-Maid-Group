@@ -59,7 +59,7 @@ export default function ContactPage() {
                   <strong>
                     {business.suburb}, {business.city}
                   </strong>
-                  <span>We come to you, up to 20 km away</span>
+                  <span>We come to you anywhere in Pretoria</span>
                 </div>
               </li>
               <li>

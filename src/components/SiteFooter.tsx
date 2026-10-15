@@ -19,8 +19,8 @@ export function SiteFooter() {
               decoding="async"
             />
             <p>
-              Cleaning for homes, apartments and offices in {business.suburb}, {business.city}, and
-              work for students along the way.
+              Cleaning for homes, apartments and offices anywhere in {business.city}, and same-day paid work
+              for students. {business.hours}.
             </p>
           </div>
           <div>

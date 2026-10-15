@@ -16,15 +16,33 @@ export const business = {
   province: "Gauteng",
   payment: "EFT or cash",
   serves: ["Homes", "Apartments", "Offices"],
-  // TO CONFIRM: working days and hours.
-  hours: null as string | null,
+  hours: "Monday to Saturday, 08:00 to 18:00" as string | null,
+  areaServed: "Anywhere in Pretoria",
   // TO CONFIRM: Instagram / Facebook / TikTok links.
   socials: [] as { label: string; href: string }[],
 };
 
-// TO CONFIRM before launch: the 10% first-clean offer appears on the social post
-// in the brand guide. Set to false if it is not running.
+// Confirmed by Zinhle (Oct 2026): first-time customers get 10% off their first clean or service.
 export const firstCleanOffer = { enabled: true, percent: 10 };
+
+// Confirmed by Zinhle (Oct 2026).
+export const policies = {
+  products:
+    "We bring our own cleaning products. If you have products you'd prefer us to use, we're happy to use those instead.",
+  satisfaction:
+    "We don't leave until you've told us you're happy with the clean. If something isn't right, we sort it out there and then.",
+  // TO CONFIRM: deposit amount, when it's paid and how (the price list says "payment via EFT or cash").
+  cancellation:
+    "Cancel at least 24 hours before your clean and your deposit is refunded. If you cancel later than that, the deposit isn't refunded. You can always move your clean to the next available date for free.",
+};
+
+// The founder's story, in Zinhle's words (lightly edited from her WhatsApp voice notes).
+// TO CONFIRM with Zinhle before launch: the edited wording, especially "bit by bit".
+export const founderStory = [
+  "I started ZA Maid Group in 2026, when I saw how hard it was to find good cleaning services in Duncan Court. I talked it through with a friend and we saw the gap. I crunched the numbers, and it all made sense.",
+  "I've always had a big dream of building a self-sustaining shelter, and bit by bit, ZA Maid has become one of the main ways that dream is becoming a reality. We give students who are willing to work the chance to earn, and get paid the same day.",
+  "ZA Maid is here to help people, and I know it's going to change the world. We love to clean. We love the transformation, the before and after. It's a beautiful sight to see a place sparkling clean. The ZA Maid team loves to clean and loves to serve.",
+];
 
 export function whatsappLink(message?: string) {
   const base = `https://wa.me/${business.whatsappNumber}`;
@@ -33,10 +51,9 @@ export function whatsappLink(message?: string) {
 
 export const highlights = [
   { title: "Trusted & trained staff", body: "Trained people who treat your space with care." },
-  { title: "Quality products", body: "Good products that leave your space fresh." },
-  { title: "Flexible scheduling", body: "Once-off, before a move, or every month." },
-  // TO CONFIRM: what "satisfaction guaranteed" means in practice (e.g. free re-clean within 24 hours).
-  { title: "Satisfaction guaranteed", body: "Not happy with something? Tell us and we'll make it right." },
+  { title: "Quality products", body: "We bring our own, or use yours if you prefer." },
+  { title: "Flexible scheduling", body: "Monday to Saturday, 08:00 to 18:00." },
+  { title: "Satisfaction guaranteed", body: "We don't leave until you're happy with the clean." },
 ];
 
 export type ServiceSummary = { slug: string; title: string; body: string };
@@ -149,8 +166,8 @@ export const nav = [
   { href: "/contact", label: "Book a clean" },
 ];
 
-// Online booking (a request that ZA Maid confirms on WhatsApp; there's no live
-// availability yet). TO CONFIRM: real time windows, days off and how far ahead to book.
+// Online booking (a request that ZA Maid confirms on WhatsApp unless the Google booking
+// page below is connected). Hours confirmed: Monday to Saturday, 08:00 to 18:00.
 // Zinhle's free Google Calendar booking page (Calendar → Create → Appointment schedule →
 // Share → Website embed). Set NEXT_PUBLIC_GOOGLE_BOOKING_URL in Vercel to its link and
 // redeploy: step 3 of the booker then shows real open slots instead of our request calendar.
@@ -173,9 +190,9 @@ function googleBookingUrl(raw: string | undefined): string | null {
 export const booking = {
   googleBookingUrl: googleBookingUrl(process.env.NEXT_PUBLIC_GOOGLE_BOOKING_URL),
   daysAhead: 60,
-  closedWeekdays: [] as number[], // 0 = Sunday … 6 = Saturday
+  closedWeekdays: [0] as number[], // 0 = Sunday … 6 = Saturday (closed Sundays)
   timeWindows: [
-    { id: "morning", label: "Morning", detail: "Start before 12:00" },
+    { id: "morning", label: "Morning", detail: "Start 08:00 to 12:00" },
     { id: "afternoon", label: "Afternoon", detail: "Start after 12:00" },
     { id: "flexible", label: "Any time", detail: "Whatever suits you" },
   ],

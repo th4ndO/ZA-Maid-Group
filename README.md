@@ -42,29 +42,21 @@ npm run build
    `NEXT_PUBLIC_SITE_URL=https://www.<domain>` so the sitemap, canonical URLs and share
    cards use it. Until then the Vercel production URL is used.
 
-## Before launch: content still needed from ZA Maid
+## Before launch: still open (as of October 2026)
 
-Every gap shows on the site as a dashed **"To add: …"** box (search the code for `<Placeholder`).
+Zinhle's answers are in (hours Mon–Sat 08:00–18:00, anywhere in Pretoria, products, cancellation,
+10% first clean, satisfaction, prices confirmed, founder story). Still needed:
 
-- [ ] **Photos**: team or founder photo (About + Home), ideally a few real before/after or
-      in-action shots. Bright, natural light, no stock photos (Brand Guide §07).
-- [ ] **Founder's story**: 2–3 short paragraphs from Zinhle Mdluli for the About page.
-- [ ] **Working days and hours** → `business.hours`.
-- [ ] **Suburbs covered** (FAQ "Which areas do you clean?").
-- [ ] **Products/equipment**: does ZA Maid bring its own? (FAQ)
-- [ ] **Cancellation / reschedule policy** (FAQ).
-- [ ] **Social links** (Instagram / Facebook / TikTok) → `business.socials`.
-- [ ] **Domain**: already owned, or which name to buy (`.co.za` recommended), registered to ZA Maid.
-
-## Before launch: claims to confirm
-
-These come from the brand kit's marketing material but are public promises once live:
-
-- [ ] **"10% off your first clean"** (from the social post in the brand guide). Is it running, and
-      on what terms? Turn off with `firstCleanOffer.enabled = false`.
-- [ ] **"Satisfaction guaranteed"**: what happens if a client isn't happy (e.g. free re-clean
-      within 24 hours)? The site currently says "Tell us and we'll make it right."
-- [ ] **Prices** match the October 2026 price list. Confirm they're current.
+- [ ] **Photos**: founder/team photo (About + Home) and real work photos. Dashed "To add" boxes
+      show where they go.
+- [ ] **Social links** → `business.socials` in `src/content/site.ts` (Zinhle sending them).
+- [ ] **Deposit**: the cancellation policy refers to a deposit. How much, when is it paid, how
+      (EFT/cash)? Then mention it on the booking page and price list.
+- [ ] **Founder story sign-off**: lightly edited from her message (voice-typing errors fixed,
+      e.g. "bit by bit"). Zinhle to approve the wording on /about.
+- [ ] **Domain**: `zamaidgroup.co.za` was available on 15 Oct 2026. Register it **in ZA Maid's
+      name** (client pays), add it to the Vercel project and set `NEXT_PUBLIC_SITE_URL`.
+- [ ] **Google booking page** (optional): see Online booking below.
 
 ## Online booking
 

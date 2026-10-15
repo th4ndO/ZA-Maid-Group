@@ -27,7 +27,7 @@ export default function ServicesPage() {
       <PageHead
         label="Services & prices"
         title="Clear prices for every clean"
-        lede={`Homes, apartments and offices in and around ${business.suburb}. Pay via ${business.payment}.`}
+        lede={`Homes, apartments and offices anywhere in ${business.city}. Pay via ${business.payment}.`}
       />
 
       <section className="section">

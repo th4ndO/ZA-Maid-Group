@@ -140,8 +140,8 @@ export default function Home() {
             <p className="label">Cleaner homes, brighter futures</p>
             <h2>Every booking creates work for students</h2>
             <p className="lede">
-              Based in {business.suburb}, we create work for students along the way. Your clean helps someone through
-              their studies.
+              Students who are willing to work earn with us, and get paid the same day. Your clean helps someone
+              through their studies.
             </p>
             <Link className="btn btn--ghost" href="/about">
               Our story

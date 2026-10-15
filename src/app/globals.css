@@ -2261,3 +2261,35 @@ body:has(.booker) .wa-fab {
 [id] {
   scroll-margin-top: 112px;
 }
+
+/* Founder's story */
+.story {
+  margin: 8px 0 0;
+  padding: 4px 0 0 22px;
+  border-left: 3px solid var(--royal);
+}
+.story p {
+  font-size: 1.0625rem;
+  color: var(--ink);
+}
+.story p:first-child::first-letter {
+  float: left;
+  font: 700 3.4rem/0.8 var(--font-serif), serif;
+  color: var(--navy);
+  padding: 6px 8px 0 0;
+}
+.story footer {
+  display: grid;
+  margin-top: 18px;
+}
+.story footer strong {
+  font: 700 1.375rem var(--font-serif), serif;
+  color: var(--navy);
+}
+.story footer span {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--royal);
+}
