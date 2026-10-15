@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AutoCarousel } from "@/components/AutoCarousel";
 import { CtaSection, OfferBadge, OfferPill, Placeholder, PriceCard } from "@/components/bits";
 import { HeroRings } from "@/components/HeroRings";
 import { ArrowIcon, CheckIcon, WhatsAppIcon } from "@/components/icons";
@@ -69,7 +70,7 @@ export default function Home() {
             <p className="label">What we do</p>
             <h2>Cleaning for every kind of space</h2>
           </div>
-          <div className="grid grid--3 carousel">
+          <AutoCarousel className="grid grid--3" label="Our services">
             {services.map((s, i) => (
               <article key={s.slug} className="card card--band">
                 <p className="card__num">{String(i + 1).padStart(2, "0")}</p>
@@ -77,7 +78,7 @@ export default function Home() {
                 <p>{s.body}</p>
               </article>
             ))}
-          </div>
+          </AutoCarousel>
         </div>
       </section>
 

@@ -1,3 +1,4 @@
+import { AutoCarousel } from "@/components/AutoCarousel";
 import type { Metadata } from "next";
 import { CtaSection, PageHead, PriceCard } from "@/components/bits";
 import {
@@ -35,14 +36,14 @@ export default function ServicesPage() {
             <p className="label">What we do</p>
             <h2>Our services</h2>
           </div>
-          <div className="grid grid--3 carousel">
+          <AutoCarousel className="grid grid--3" label="Our services">
             {services.map((s) => (
               <article key={s.slug} className="card card--band">
                 <h3>{s.title}</h3>
                 <p>{s.body}</p>
               </article>
             ))}
-          </div>
+          </AutoCarousel>
         </div>
       </section>
 

@@ -279,7 +279,24 @@ p {
   display: none;
 }
 
+/* Desktop: icons and the contact block only appear in the mobile menu. */
+.site-nav__links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.site-nav__icon,
+.site-nav__chevron,
+.site-nav__contact {
+  display: none;
+}
+
+/* Mobile: full-screen menu with icons. */
 @media (max-width: 899px) {
+  .site-header {
+    background: var(--white);
+    backdrop-filter: none; /* a backdrop-filter would trap the fixed menu inside the header */
+  }
   .menu-toggle {
     display: inline-flex;
     align-items: center;
@@ -292,34 +309,112 @@ p {
     color: var(--navy);
     cursor: pointer;
   }
+  .site-header[data-menu-open="true"] {
+    z-index: 90; /* above the floating WhatsApp button */
+  }
+  .site-header[data-menu-open="true"] .menu-toggle {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: var(--white);
+  }
   .site-nav {
     display: none;
-    position: absolute;
-    top: 100%;
+    position: fixed;
+    top: 73px;
     left: 0;
     right: 0;
+    bottom: 0;
+    z-index: 70;
     flex-direction: column;
     align-items: stretch;
-    gap: 0;
-    padding: 8px var(--gutter) 20px;
-    background: var(--white);
-    border-bottom: 1px solid var(--line);
-    box-shadow: var(--shadow);
+    justify-content: space-between;
+    gap: 32px;
+    padding: 16px var(--gutter) calc(28px + env(safe-area-inset-bottom));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--navy);
   }
   .site-nav[data-open="true"] {
     display: flex;
+    animation: menu-in 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
-  .site-nav a {
-    padding: 14px 8px;
-    font-size: 1.0625rem;
-    border-bottom: 1px solid var(--mist);
+  .site-nav__links {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+  .site-nav .site-nav__links a,
+  .site-nav .site-nav__links a.site-nav__cta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 0;
+    padding: 18px 4px;
     border-radius: 0;
+    border-bottom: 1px solid rgb(169 200 238 / 0.18);
+    background: transparent;
+    color: var(--white);
+    font: 700 1.5rem/1.2 var(--font-serif), serif;
   }
-  .site-nav a.site-nav__cta {
-    margin: 16px 0 0;
-    text-align: center;
+  .site-nav .site-nav__links a > span {
+    flex: 1;
+  }
+  .site-nav .site-nav__links a[aria-current="page"] {
+    color: var(--sky);
+  }
+  .site-nav__icon {
+    display: block;
+    flex: none;
+    width: 44px;
+    height: 44px;
+    padding: 11px;
+    border-radius: 12px;
+    background: rgb(169 200 238 / 0.12);
+    color: var(--sky);
+  }
+  .site-nav__links a[aria-current="page"] .site-nav__icon {
+    background: var(--royal);
+    color: var(--white);
+  }
+  .site-nav__chevron {
+    display: block;
+    width: 20px;
+    height: 20px;
+    color: rgb(169 200 238 / 0.6);
+  }
+  .site-nav[data-open="true"] .site-nav__links a {
+    animation: rise 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  }
+  .site-nav[data-open="true"] .site-nav__links a:nth-child(2) { animation-delay: 0.04s; }
+  .site-nav[data-open="true"] .site-nav__links a:nth-child(3) { animation-delay: 0.08s; }
+  .site-nav[data-open="true"] .site-nav__links a:nth-child(4) { animation-delay: 0.12s; }
+  .site-nav[data-open="true"] .site-nav__links a:nth-child(5) { animation-delay: 0.16s; }
+  .site-nav__contact {
+    display: grid;
+    gap: 10px;
+  }
+  .site-nav__contact .btn {
+    min-height: 52px;
+  }
+  .site-nav .site-nav__contact .btn {
+    color: var(--white);
+    font-size: 1rem;
     border-radius: var(--radius-pill);
-    border-bottom: 0;
+  }
+  .site-nav__contact p {
+    margin: 8px 0 0;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.6875rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--sky);
+  }
+}
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    translate: 0 -12px;
   }
 }
 
@@ -1302,11 +1397,6 @@ p {
   }
 }
 
-@media (max-width: 899px) {
-  .site-nav[data-open="true"] {
-    animation: rise 0.25s ease backwards;
-  }
-}
 
 .wa-fab {
   animation: rise 0.6s 1s ease backwards;
@@ -1538,5 +1628,35 @@ p {
   }
   .ring--3 {
     display: none;
+  }
+}
+
+/* Moving carousel (phones). */
+.carousel {
+  position: relative;
+}
+.carousel-dots {
+  display: none;
+}
+@media (max-width: 639px) {
+  .carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .carousel-dots button {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: #c3cfdf;
+    cursor: pointer;
+    transition: width 0.3s ease, background-color 0.3s ease;
+  }
+  .carousel-dots button[data-active="true"] {
+    width: 24px;
+    background: var(--royal);
   }
 }
