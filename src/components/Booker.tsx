@@ -179,7 +179,7 @@ export function Booker() {
         <div className="booker__panel">
           {step === 0 && (
             <section aria-labelledby="b-what">
-              <h3 id="b-what">What needs cleaning?</h3>
+              <h2 id="b-what">What needs cleaning?</h2>
               <p className="booker__hint">Add everything you need. Prices are from our price list.</p>
               {groups.map((g, gi) => {
                 const groupItems = items.filter((i) => i.group === g);
@@ -238,7 +238,7 @@ export function Booker() {
 
           {step === 1 && (
             <section aria-labelledby="b-where">
-              <h3 id="b-where">Where are we cleaning?</h3>
+              <h2 id="b-where">Where are we cleaning?</h2>
               <p className="booker__hint">This sets the callout fee, charged once per visit.</p>
               <div className="booker__options" role="radiogroup" aria-label="Distance from Hatfield">
                 {calloutFees.map((c, i) => (
@@ -276,7 +276,7 @@ export function Booker() {
 
           {step === 2 && google && (
             <section aria-labelledby="b-when">
-              <h3 id="b-when">Pick your time</h3>
+              <h2 id="b-when">Pick your time</h2>
               <p className="booker__hint">
                 These are our real open slots. Choose one and add your details, then come back here to send us your
                 list.
@@ -303,7 +303,7 @@ export function Booker() {
 
           {step === 2 && !google && (
             <section aria-labelledby="b-when">
-              <h3 id="b-when">When suits you?</h3>
+              <h2 id="b-when">When suits you?</h2>
               <p className="booker__hint">Pick a day and a time. We&apos;ll confirm it on WhatsApp.</p>
               <MonthCalendar value={date} onChange={setDate} />
               <div className="booker__options booker__options--3" role="radiogroup" aria-label="Time of day">
@@ -327,7 +327,7 @@ export function Booker() {
 
           {step === 3 && (
             <section aria-labelledby="b-you">
-              <h3 id="b-you">Almost done</h3>
+              <h2 id="b-you">Almost done</h2>
               <div className="field">
                 <label htmlFor="b-name">Your name</label>
                 <input id="b-name" value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" />

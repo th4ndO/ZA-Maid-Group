@@ -1784,7 +1784,7 @@ body:has(.booker) .wa-fab {
     gap: 40px;
   }
 }
-.booker__panel h3 {
+.booker__panel h2 {
   font-size: clamp(1.625rem, 4vw, 2rem);
   margin-bottom: 4px;
 }
@@ -2255,4 +2255,9 @@ body:has(.booker) .wa-fab {
 }
 .map--facade .btn-row {
   justify-content: center;
+}
+
+/* Jump links (e.g. /services#callout-fee) land below the sticky header, not under it. */
+[id] {
+  scroll-margin-top: 112px;
 }
