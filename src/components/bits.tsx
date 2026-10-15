@@ -93,7 +93,7 @@ export function CtaSection({ title, lede }: { title: string; lede: string }) {
             <WhatsAppIcon /> WhatsApp {business.phoneDisplay}
           </a>
           <Link className="btn btn--ghost" href="/contact">
-            Request a quote
+            Book online
           </Link>
         </div>
       </div>

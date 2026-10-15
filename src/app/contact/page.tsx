@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { PageHead, Placeholder } from "@/components/bits";
 import { CardIcon, ClockIcon, MailIcon, PhoneIcon, PinIcon, WhatsAppIcon } from "@/components/icons";
-import { QuoteForm } from "@/components/QuoteForm";
+import { Booker } from "@/components/Booker";
 import { business, whatsappLink } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Book a clean",
   description:
-    "Get a cleaning quote from ZA Maid Group. WhatsApp or call 071 510 4638, email zamaidgroup@gmail.com, or send the quote form. Hatfield, Pretoria.",
+    "Book a clean with ZA Maid Group online: choose your services, see the price, pick a day. Or WhatsApp 071 510 4638. Hatfield, Pretoria.",
   alternates: { canonical: "/contact" },
 };
 
@@ -16,17 +16,18 @@ export default function ContactPage() {
     <>
       <PageHead
         label="Book a clean"
-        title="Get your quote"
-        lede="Tell us what needs cleaning and where. We'll reply with a price, including the callout fee, and a time."
+        title="Book in a minute"
+        lede="Choose what needs cleaning, see your price, and pick a day. We'll confirm on WhatsApp."
       />
 
-      <section className="section">
-        <div className="wrap split split--wide-left">
-          <div>
-            <h2>Request a quote</h2>
-            <QuoteForm />
-          </div>
+      <section className="section section--booker">
+        <div className="wrap">
+          <Booker />
+        </div>
+      </section>
 
+      <section className="section section--mist">
+        <div className="wrap split split--wide-left">
           <aside aria-label="Contact details">
             <h2>Talk to us</h2>
             <ul className="contact-list">
@@ -77,14 +78,14 @@ export default function ContactPage() {
                 </div>
               </li>
             </ul>
-            <iframe
+          </aside>
+          <iframe
               className="map"
               title={`Map of ${business.suburb}, ${business.city}`}
               src="https://www.google.com/maps?q=Hatfield,+Pretoria,+South+Africa&z=14&output=embed"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
             />
-          </aside>
         </div>
       </section>
     </>

@@ -148,3 +148,15 @@ export const nav = [
   { href: "/faq", label: "FAQ" },
   { href: "/contact", label: "Book a clean" },
 ];
+
+// Online booking (a request that ZA Maid confirms on WhatsApp; there's no live
+// availability yet). TO CONFIRM: real time windows, days off and how far ahead to book.
+export const booking = {
+  daysAhead: 60,
+  closedWeekdays: [] as number[], // 0 = Sunday … 6 = Saturday
+  timeWindows: [
+    { id: "morning", label: "Morning", detail: "Start before 12:00" },
+    { id: "afternoon", label: "Afternoon", detail: "Start after 12:00" },
+    { id: "flexible", label: "Any time", detail: "Whatever suits you" },
+  ],
+};

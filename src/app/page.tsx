@@ -33,8 +33,8 @@ export default function Home() {
               <a className="btn btn--primary" href={whatsappLink("Hi ZA Maid Group, I'd like a quote for a clean.")}>
                 <WhatsAppIcon /> Get a quote on WhatsApp
               </a>
-              <Link className="btn btn--ghost" href="/services">
-                See our prices
+              <Link className="btn btn--ghost" href="/contact">
+                Book online
               </Link>
             </div>
           </div>

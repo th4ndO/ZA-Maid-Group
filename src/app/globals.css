@@ -1665,3 +1665,536 @@ p {
     background: var(--royal);
   }
 }
+
+/* ---------- Booking ---------- */
+
+/* The booker has its own sticky action bar, so the floating WhatsApp button would cover it. */
+body:has(.booker) .wa-fab {
+  display: none;
+}
+.section--booker {
+  padding-top: 32px;
+}
+
+.booker {
+  position: relative;
+}
+
+/* Progress */
+.booker__progress {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+}
+.booker__progress button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--muted);
+  cursor: default;
+}
+.booker__progress li[data-state="done"] button {
+  cursor: pointer;
+  color: var(--navy);
+}
+.booker__progress li {
+  position: relative;
+}
+.booker__progress li::after {
+  content: "";
+  position: absolute;
+  top: 17px;
+  left: calc(50% + 22px);
+  right: calc(-50% + 22px);
+  height: 2px;
+  background: var(--line);
+}
+.booker__progress li:last-child::after {
+  display: none;
+}
+.booker__progress li[data-state="done"]::after {
+  background: var(--royal);
+}
+.booker__dot {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  background: var(--white);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+.booker__dot svg {
+  width: 18px;
+  height: 18px;
+}
+.booker__progress li[data-state="current"] .booker__dot {
+  border-color: var(--royal);
+  background: var(--royal);
+  color: var(--white);
+  box-shadow: 0 0 0 5px rgb(43 89 168 / 0.15);
+}
+.booker__progress li[data-state="done"] .booker__dot {
+  border-color: var(--royal);
+  color: var(--royal);
+}
+.booker__step-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+.booker__progress li[data-state="current"] .booker__step-label {
+  color: var(--navy);
+}
+
+.booker__body {
+  display: grid;
+  gap: 24px;
+  align-items: start;
+}
+@media (min-width: 900px) {
+  .booker__body {
+    grid-template-columns: 1.5fr 1fr;
+    gap: 40px;
+  }
+}
+.booker__panel h3 {
+  font-size: clamp(1.625rem, 4vw, 2rem);
+  margin-bottom: 4px;
+}
+.booker__panel section {
+  animation: rise 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.booker__hint {
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+.booker__error {
+  margin: 14px 0 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #fdecec;
+  color: #8a1c1c;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+/* Step 1: service groups */
+.booker__group {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.booker__group summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 18px;
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--navy);
+}
+.booker__group summary::-webkit-details-marker {
+  display: none;
+}
+.booker__group summary span:first-child {
+  flex: 1;
+}
+.booker__group summary::after {
+  content: "+";
+  font-size: 1.375rem;
+  line-height: 1;
+  color: var(--royal);
+  transition: rotate 0.2s ease;
+}
+.booker__group[open] summary::after {
+  rotate: 45deg;
+}
+.booker__badge {
+  display: grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 7px;
+  border-radius: var(--radius-pill);
+  background: var(--royal);
+  color: var(--white);
+  font-size: 0.8125rem;
+}
+.booker__group ul {
+  list-style: none;
+  margin: 0;
+  padding: 0 8px 8px;
+}
+.booker__group li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 10px;
+  transition: background-color 0.2s ease;
+}
+.booker__group li + li {
+  border-top: 1px solid var(--mist);
+}
+.booker__group li[data-selected="true"] {
+  background: #e8eff9;
+}
+.booker__item {
+  flex: 1;
+  display: grid;
+  line-height: 1.35;
+}
+.booker__item-name {
+  font-weight: 500;
+}
+.booker__item-price {
+  font-weight: 700;
+  color: var(--royal);
+  font-size: 0.9375rem;
+}
+.booker__item-price small {
+  font-weight: 500;
+  color: var(--muted);
+}
+.booker__add {
+  min-width: 72px;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1.5px solid var(--royal);
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--royal);
+  font: 600 0.9375rem var(--font-sans), sans-serif;
+  cursor: pointer;
+}
+.booker__stepper {
+  display: flex;
+  align-items: center;
+  border-radius: var(--radius-pill);
+  background: var(--royal);
+  color: var(--white);
+  animation: fade 0.2s ease;
+}
+.booker__stepper button {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+.booker__stepper button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.booker__stepper output {
+  min-width: 28px;
+  text-align: center;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Step 2 & 3: option tiles */
+.booker__options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.booker__options--3 {
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 20px;
+}
+.booker__option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 56px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--ink);
+  font: 500 0.9375rem/1.3 var(--font-sans), sans-serif;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.booker__option small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+.booker__option strong {
+  color: var(--navy);
+  white-space: nowrap;
+}
+.booker__option--stack {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+}
+.booker__option[aria-checked="true"] {
+  border-color: var(--royal);
+  background: #e8eff9;
+  box-shadow: 0 0 0 3px rgb(43 89 168 / 0.15);
+}
+.booker__option[aria-checked="true"] strong {
+  color: var(--royal);
+}
+@media (max-width: 420px) {
+  .booker__options--3 {
+    grid-template-columns: 1fr;
+  }
+  .booker__option--stack {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+/* Calendar */
+.cal {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+  padding: 14px;
+}
+.cal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.cal__head strong {
+  font: 700 1.125rem var(--font-serif), serif;
+  color: var(--navy);
+}
+.cal__head button {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--white);
+  color: var(--navy);
+  font-size: 1.375rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.cal__head button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.cal__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.cal__wd {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+  padding: 4px 0;
+}
+.cal__day {
+  aspect-ratio: 1;
+  min-height: 40px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--mist);
+  color: var(--navy);
+  font: 600 0.9375rem var(--font-sans), sans-serif;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.cal__day:disabled {
+  background: transparent;
+  color: #b3bdcb;
+  cursor: default;
+}
+.cal__day[aria-pressed="true"] {
+  background: var(--royal);
+  color: var(--white);
+  box-shadow: 0 6px 14px rgb(43 89 168 / 0.35);
+}
+@media (hover: hover) {
+  .cal__day:not(:disabled):not([aria-pressed="true"]):hover {
+    background: #dce6f4;
+  }
+  .booker__option:hover {
+    border-color: var(--sky);
+  }
+  .booker__add:hover {
+    background: var(--royal);
+    color: var(--white);
+  }
+}
+
+/* Step 4 */
+.booker__panel .field {
+  margin-bottom: 16px;
+}
+.booker__check {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1.5px dashed var(--royal);
+  border-radius: 12px;
+  background: #f3f7fc;
+  font-weight: 600;
+  color: var(--navy);
+  cursor: pointer;
+}
+.booker__check input {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--royal);
+}
+.booker__send {
+  display: grid;
+  gap: 10px;
+  margin: 22px 0 12px;
+}
+.booker__send .btn {
+  min-height: 54px;
+  font-size: 1rem;
+}
+
+/* Summary (desktop sidebar; on phones it sits under the step) */
+.booker__summary {
+  border-radius: var(--radius);
+  background: var(--navy);
+  color: var(--white);
+  padding: 24px;
+  border-bottom: 6px solid var(--royal);
+}
+@media (min-width: 900px) {
+  .booker__summary {
+    position: sticky;
+    top: 96px;
+  }
+}
+.booker__summary .label {
+  color: var(--sky);
+}
+.booker__empty {
+  color: #c7d6ea;
+  margin: 0 0 12px;
+}
+.booker__lines {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+}
+.booker__lines li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgb(169 200 238 / 0.18);
+  font-size: 0.9375rem;
+  animation: rise 0.25s ease;
+}
+.booker__lines li span:last-child {
+  font-weight: 700;
+  white-space: nowrap;
+}
+.booker__when {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #d3e1f4;
+  font-size: 0.9375rem;
+}
+.booker__when svg {
+  width: 18px;
+  height: 18px;
+  color: var(--sky);
+  flex: none;
+}
+.booker__total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 8px 0 0;
+}
+.booker__total strong {
+  font: 700 2rem/1 var(--font-serif), serif;
+}
+
+/* Sticky action bar */
+.booker__bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 24px calc(-1 * var(--gutter)) 0;
+  padding: 12px var(--gutter) calc(12px + env(safe-area-inset-bottom));
+  background: rgb(255 255 255 / 0.97);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -8px 24px rgb(15 35 64 / 0.08);
+}
+.booker__bar-total {
+  display: grid;
+  line-height: 1.1;
+}
+.booker__bar-total small {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.booker__bar-total strong {
+  font: 700 1.5rem var(--font-serif), serif;
+  color: var(--navy);
+}
+.booker__bar-actions {
+  display: flex;
+  gap: 8px;
+}
+.booker__bar .btn {
+  min-height: 48px;
+  padding: 0.6em 1.2em;
+}
+@media (min-width: 900px) {
+  .booker__bar {
+    margin: 24px 0 0;
+    padding: 14px 0;
+    box-shadow: none;
+  }
+  .booker__bar-total {
+    display: none;
+  }
+  .booker__bar-actions {
+    margin-left: auto;
+  }
+}
+@media (max-width: 899px) {
+  .booker:not([data-step="3"]) .booker__summary {
+    display: none;
+  }
+}
