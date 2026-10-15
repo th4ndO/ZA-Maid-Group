@@ -39,15 +39,11 @@ export default function Home() {
             </div>
           </div>
           <div className="hero__aside">
-            {/* eslint-disable-next-line @next/next/no-img-element -- brand SVG */}
-            <img
-              className="hero__logo"
-              src="/brand/logo-primary-white.svg"
-              alt=""
-              width={1145}
-              height={670}
-              fetchPriority="high"
-            />
+            {/* Phones never show this logo, so give them a 1-pixel stand-in instead of a ~17 KB download. */}
+            <picture>
+              <source media="(max-width: 899px)" srcSet="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
+              <img className="hero__logo" src="/brand/logo-primary-white.svg" alt="" width={1145} height={670} decoding="async" />
+            </picture>
             <OfferBadge />
           </div>
         </div>

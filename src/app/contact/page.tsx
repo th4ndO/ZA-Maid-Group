@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PageHead, Placeholder } from "@/components/bits";
 import { CardIcon, ClockIcon, MailIcon, PhoneIcon, PinIcon, WhatsAppIcon } from "@/components/icons";
 import { Booker } from "@/components/Booker";
+import { MapFacade } from "@/components/MapFacade";
 import { business, whatsappLink } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -79,13 +80,7 @@ export default function ContactPage() {
               </li>
             </ul>
           </aside>
-          <iframe
-              className="map"
-              title={`Map of ${business.suburb}, ${business.city}`}
-              src="https://www.google.com/maps?q=Hatfield,+Pretoria,+South+Africa&z=14&output=embed"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
+          <MapFacade query="Hatfield, Pretoria, South Africa" label={`${business.suburb}, ${business.city}`} />
         </div>
       </section>
     </>

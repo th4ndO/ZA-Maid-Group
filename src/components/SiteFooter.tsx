@@ -15,6 +15,8 @@ export function SiteFooter() {
               alt="ZA Maid Group. Spotless, reliable, trusted."
               width={3340}
               height={565}
+              loading="lazy"
+              decoding="async"
             />
             <p>
               Cleaning for homes, apartments and offices in {business.suburb}, {business.city}, and

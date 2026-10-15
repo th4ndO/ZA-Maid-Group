@@ -1315,6 +1315,21 @@ p {
 .page-head .lede {
   animation: rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
 }
+/* The headline and intro are what visitors (and Google's speed test) wait for, so
+   they are visible from the first frame and only glide into place. */
+@keyframes settle {
+  from {
+    translate: 0 14px;
+  }
+}
+.hero h1,
+.hero .lede,
+.page-head h1,
+.page-head .lede {
+  animation-name: settle;
+  animation-duration: 0.6s;
+  animation-delay: 0s;
+}
 .page-head h1 {
   animation-delay: 0.08s;
 }
@@ -2217,4 +2232,27 @@ body:has(.booker) .wa-fab {
   .gcal iframe {
     height: 720px;
   }
+}
+
+.map--facade {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+  color: var(--navy);
+  background:
+    radial-gradient(circle at 30% 30%, rgb(169 200 238 / 0.45), transparent 55%),
+    repeating-linear-gradient(0deg, transparent 0 38px, rgb(43 89 168 / 0.08) 38px 40px),
+    repeating-linear-gradient(90deg, transparent 0 38px, rgb(43 89 168 / 0.08) 38px 40px),
+    var(--mist);
+}
+.map--facade > svg {
+  width: 36px;
+  height: 36px;
+  color: var(--royal);
+}
+.map--facade .btn-row {
+  justify-content: center;
 }
