@@ -151,7 +151,27 @@ export const nav = [
 
 // Online booking (a request that ZA Maid confirms on WhatsApp; there's no live
 // availability yet). TO CONFIRM: real time windows, days off and how far ahead to book.
+// Zinhle's free Google Calendar booking page (Calendar → Create → Appointment schedule →
+// Share → Website embed). Set NEXT_PUBLIC_GOOGLE_BOOKING_URL in Vercel to its link and
+// redeploy: step 3 of the booker then shows real open slots instead of our request calendar.
+function googleBookingUrl(raw: string | undefined): string | null {
+  if (!raw) return null;
+  try {
+    const url = new URL(raw.trim());
+    const ok =
+      url.protocol === "https:" &&
+      (url.hostname === "calendar.app.google" ||
+        (url.hostname === "calendar.google.com" && url.pathname.includes("/appointments/")));
+    if (!ok) return null;
+    if (url.hostname === "calendar.google.com") url.searchParams.set("gv", "true"); // embed mode
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
+
 export const booking = {
+  googleBookingUrl: googleBookingUrl(process.env.NEXT_PUBLIC_GOOGLE_BOOKING_URL),
   daysAhead: 60,
   closedWeekdays: [] as number[], // 0 = Sunday … 6 = Saturday
   timeWindows: [

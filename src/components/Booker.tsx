@@ -77,6 +77,8 @@ export function Booker() {
   const [area, setArea] = useState("");
   const [date, setDate] = useState<Date | null>(null);
   const [time, setTime] = useState<string | null>(null);
+  const [booked, setBooked] = useState(false); // ticked after picking a slot on Google's page
+  const google = booking.googleBookingUrl;
   const [name, setName] = useState("");
   const [notes, setNotes] = useState("");
   const [firstClean, setFirstClean] = useState(false);
@@ -93,7 +95,7 @@ export function Booker() {
   const stepValid = [
     chosen.length > 0,
     callout !== null && area.trim().length > 1,
-    date !== null && time !== null,
+    google ? booked : date !== null && time !== null,
     name.trim().length > 1,
   ];
 
@@ -121,7 +123,9 @@ export function Booker() {
     const lines = [
       "Hi ZA Maid Group, I'd like to book a clean.",
       "",
-      `Date: ${date ? longDate(date) : "-"}${timeLabel ? `, ${timeLabel.label.toLowerCase()}` : ""}`,
+      google
+        ? "Time: I've booked a slot on your booking page."
+        : `Date: ${date ? longDate(date) : "-"}${timeLabel ? `, ${timeLabel.label.toLowerCase()}` : ""}`,
       `Where: ${area.trim()}${fee ? ` (${fee.label}${fee.detail ? `, ${fee.detail}` : ""})` : ""}`,
       "",
       "Services:",
@@ -270,7 +274,34 @@ export function Booker() {
             </section>
           )}
 
-          {step === 2 && (
+          {step === 2 && google && (
+            <section aria-labelledby="b-when">
+              <h3 id="b-when">Pick your time</h3>
+              <p className="booker__hint">
+                These are our real open slots. Choose one and add your details, then come back here to send us your
+                list.
+              </p>
+              <div className="gcal">
+                <iframe src={google} title="ZA Maid Group booking calendar" loading="lazy" />
+              </div>
+              <p className="booker__hint">
+                Calendar not loading?{" "}
+                <a href={google} target="_blank" rel="noopener">
+                  Open it in a new tab
+                </a>
+                .
+              </p>
+              <label className="booker__check">
+                <input type="checkbox" checked={booked} onChange={(e) => setBooked(e.target.checked)} />
+                <span>I&apos;ve booked my time</span>
+              </label>
+              {tried && !stepValid[2] && (
+                <p className="booker__error">Book a time on the calendar, then tick the box to continue.</p>
+              )}
+            </section>
+          )}
+
+          {step === 2 && !google && (
             <section aria-labelledby="b-when">
               <h3 id="b-when">When suits you?</h3>
               <p className="booker__hint">Pick a day and a time. We&apos;ll confirm it on WhatsApp.</p>
@@ -332,7 +363,9 @@ export function Booker() {
               <p className="form__note" aria-live="polite">
                 {sent
                   ? `Your ${sent === "whatsapp" ? "WhatsApp" : "email app"} should have opened with your booking. Just press send there. We'll confirm the time and final price.`
-                  : "This is a booking request. We'll confirm the time and final price with you before the clean."}
+                  : google
+                    ? "Your time is booked. Send us this list so we know what to bring. We'll confirm the final price."
+                    : "This is a booking request. We'll confirm the time and final price with you before the clean."}
               </p>
             </section>
           )}
@@ -366,7 +399,12 @@ export function Booker() {
               )}
             </ul>
           )}
-          {date && (
+          {google && booked && (
+            <p className="booker__when">
+              <CalendarIcon /> Time booked on our calendar
+            </p>
+          )}
+          {!google && date && (
             <p className="booker__when">
               <CalendarIcon /> {longDate(date)}
               {timeLabel ? `, ${timeLabel.label.toLowerCase()}` : ""}

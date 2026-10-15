@@ -2198,3 +2198,23 @@ body:has(.booker) .wa-fab {
     display: none;
   }
 }
+
+/* Google Calendar booking page (embedded) */
+.gcal {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--white);
+  margin-bottom: 12px;
+}
+.gcal iframe {
+  display: block;
+  width: 100%;
+  height: 640px;
+  border: 0;
+}
+@media (min-width: 900px) {
+  .gcal iframe {
+    height: 720px;
+  }
+}

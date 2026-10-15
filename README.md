@@ -65,3 +65,20 @@ These come from the brand kit's marketing material but are public promises once 
 - [ ] **"Satisfaction guaranteed"**: what happens if a client isn't happy (e.g. free re-clean
       within 24 hours)? The site currently says "Tell us and we'll make it right."
 - [ ] **Prices** match the October 2026 price list. Confirm they're current.
+
+## Online booking
+
+`/contact` has a 4-step booker (services → area → time → details) that sends the booking to
+ZA Maid on WhatsApp or email. Nothing is stored on the site.
+
+**Real availability (free):** Zinhle creates a Google Calendar *appointment schedule* in her own
+Google account, then in Vercel → Project → Settings → Environment Variables add
+
+```
+NEXT_PUBLIC_GOOGLE_BOOKING_URL=<the booking page link>
+```
+
+and redeploy. Step 3 then embeds her booking page (real open slots, no double bookings); the
+WhatsApp message still carries the service list and estimate. Without the variable, step 3 falls
+back to the built-in request calendar (days/time windows in `booking` in `src/content/site.ts`).
+Accepted links: `https://calendar.app.google/…` or `https://calendar.google.com/calendar/appointments/…`.
