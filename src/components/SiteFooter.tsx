@@ -11,10 +11,10 @@ export function SiteFooter() {
             {/* eslint-disable-next-line @next/next/no-img-element -- brand SVG */}
             <img
               className="site-footer__logo"
-              src="/brand/logo-primary-white.svg"
-              alt="ZA Maid Group. Your space. Our priority."
-              width={1145}
-              height={670}
+              src="/brand/logo-horizontal-white.svg"
+              alt="ZA Maid Group. Spotless, reliable, trusted."
+              width={3340}
+              height={565}
             />
             <p>
               Cleaning for homes, apartments and offices in {business.suburb}, {business.city}, and

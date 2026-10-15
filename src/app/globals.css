@@ -242,7 +242,12 @@ p {
 }
 .site-header__logo {
   display: block;
-  width: clamp(200px, 30vw, 260px);
+  width: clamp(200px, 30vw, 280px);
+}
+@media (max-width: 639px) {
+  .site-header__logo {
+    width: min(62vw, 270px);
+  }
 }
 .site-nav {
   display: flex;
@@ -1164,7 +1169,7 @@ p {
   }
 }
 .site-footer__logo {
-  width: 180px;
+  width: min(100%, 320px);
   margin-bottom: 18px;
 }
 .site-footer h2 {
