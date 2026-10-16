@@ -2293,3 +2293,31 @@ body:has(.booker) .wa-fab {
   text-transform: uppercase;
   color: var(--royal);
 }
+
+/* Booking calendar opened in a new tab (short Google link) */
+.gcal-link {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 28px 20px;
+  margin-bottom: 14px;
+  text-align: center;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--mist);
+}
+.gcal-link > svg {
+  width: 40px;
+  height: 40px;
+  color: var(--royal);
+}
+.gcal-link p {
+  margin: 0;
+  color: var(--muted);
+  max-width: 30em;
+}
+.gcal-link .btn {
+  min-height: 54px;
+  width: 100%;
+  max-width: 360px;
+}

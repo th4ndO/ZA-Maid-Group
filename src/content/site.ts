@@ -188,7 +188,10 @@ function googleBookingUrl(raw: string | undefined): string | null {
 }
 
 export const booking = {
-  googleBookingUrl: googleBookingUrl(process.env.NEXT_PUBLIC_GOOGLE_BOOKING_URL),
+  // Zinhle's booking page (shared 16 Oct 2026). NEXT_PUBLIC_GOOGLE_BOOKING_URL overrides it.
+  googleBookingUrl: googleBookingUrl(
+    process.env.NEXT_PUBLIC_GOOGLE_BOOKING_URL ?? "https://calendar.app.google/va6cm26uCpFS9umz6",
+  ),
   daysAhead: 60,
   closedWeekdays: [0] as number[], // 0 = Sunday … 6 = Saturday (closed Sundays)
   timeWindows: [

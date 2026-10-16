@@ -56,7 +56,9 @@ Zinhle's answers are in (hours Mon–Sat 08:00–18:00, anywhere in Pretoria, pr
       e.g. "bit by bit"). Zinhle to approve the wording on /about.
 - [ ] **Domain**: `zamaidgroup.co.za` was available on 15 Oct 2026. Register it **in ZA Maid's
       name** (client pays), add it to the Vercel project and set `NEXT_PUBLIC_SITE_URL`.
-- [ ] **Google booking page** (optional): see Online booking below.
+- [x] **Google booking page**: connected (`https://calendar.app.google/va6cm26uCpFS9umz6`). It opens
+      in a new tab from step 3. For the calendar to show *inside* the page, use the full link from
+      Google Calendar → the schedule → Share → **Website embed** (a `calendar.google.com/…` URL).
 
 ## Online booking
 

@@ -79,6 +79,9 @@ export function Booker() {
   const [time, setTime] = useState<string | null>(null);
   const [booked, setBooked] = useState(false); // ticked after picking a slot on Google's page
   const google = booking.googleBookingUrl;
+  // Short calendar.app.google links redirect to a page Google may not allow inside another
+  // site, so they open in a new tab; full calendar.google.com links (embed mode) show inline.
+  const embeddable = google?.startsWith("https://calendar.google.com/") ?? false;
   const [name, setName] = useState("");
   const [notes, setNotes] = useState("");
   const [firstClean, setFirstClean] = useState(false);
@@ -277,20 +280,35 @@ export function Booker() {
           {step === 2 && google && (
             <section aria-labelledby="b-when">
               <h2 id="b-when">Pick your time</h2>
-              <p className="booker__hint">
-                These are our real open slots. Choose one and add your details, then come back here to send us your
-                list.
-              </p>
-              <div className="gcal">
-                <iframe src={google} title="ZA Maid Group booking calendar" loading="lazy" />
-              </div>
-              <p className="booker__hint">
-                Calendar not loading?{" "}
-                <a href={google} target="_blank" rel="noopener">
-                  Open it in a new tab
-                </a>
-                .
-              </p>
+              {embeddable ? (
+                <>
+                  <p className="booker__hint">
+                    These are our real open slots. Choose one and add your details, then come back here to send us
+                    your list.
+                  </p>
+                  <div className="gcal">
+                    <iframe src={google} title="ZA Maid Group booking calendar" loading="lazy" />
+                  </div>
+                  <p className="booker__hint">
+                    Calendar not loading?{" "}
+                    <a href={google} target="_blank" rel="noopener">
+                      Open it in a new tab
+                    </a>
+                    .
+                  </p>
+                </>
+              ) : (
+                <div className="gcal-link">
+                  <CalendarIcon />
+                  <p>
+                    Our calendar shows only the times we&apos;re free. Pick one, add your details, then come back to
+                    this tab to send us your list.
+                  </p>
+                  <a className="btn btn--primary" href={google} target="_blank" rel="noopener">
+                    Choose a time on our calendar
+                  </a>
+                </div>
+              )}
               <label className="booker__check">
                 <input type="checkbox" checked={booked} onChange={(e) => setBooked(e.target.checked)} />
                 <span>I&apos;ve booked my time</span>
