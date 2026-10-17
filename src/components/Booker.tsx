@@ -98,6 +98,7 @@ export function Booker() {
   const [phone, setPhone] = useState("");
   const [claim, setClaim] = useState<ClaimResult | null>(null);
   const [sending, setSending] = useState(false);
+  const [touched, setTouched] = useState({ name: false, phone: false });
   const [sent, setSent] = useState<null | "whatsapp" | "email">(null);
   const [tried, setTried] = useState(false);
 
@@ -613,11 +614,30 @@ export function Booker() {
             <section aria-labelledby="b-you">
               <h2 id="b-you">Almost done</h2>
               <div className="field">
-                <label htmlFor="b-name">Your name</label>
-                <input id="b-name" value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" />
+                <label htmlFor="b-name">
+                  Your name <span className="req" aria-hidden>*</span>
+                </label>
+                <input
+                  id="b-name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  onBlur={() => setTouched((t) => ({ ...t, name: true }))}
+                  autoComplete="name"
+                  required
+                  aria-required="true"
+                  aria-invalid={(touched.name || tried) && name.trim().length < 2}
+                  aria-describedby="b-name-err"
+                />
+                {(touched.name || tried) && name.trim().length < 2 && (
+                  <p className="field__error" id="b-name-err">
+                    Please enter your name.
+                  </p>
+                )}
               </div>
               <div className="field">
-                <label htmlFor="b-phone">Cellphone number</label>
+                <label htmlFor="b-phone">
+                  Cellphone number <span className="req" aria-hidden>*</span>
+                </label>
                 <input
                   id="b-phone"
                   type="tel"
@@ -627,11 +647,23 @@ export function Booker() {
                     setPhone(e.target.value);
                     setClaim(null);
                   }}
+                  onBlur={() => setTouched((t) => ({ ...t, phone: true }))}
                   autoComplete="tel"
                   placeholder="e.g. 071 234 5678"
-                  aria-invalid={phone.trim() !== "" && !mobile}
+                  required
+                  aria-required="true"
+                  aria-invalid={(touched.phone || tried) && !mobile}
+                  aria-describedby="b-phone-err"
                 />
+                {(touched.phone || tried) && !mobile && (
+                  <p className="field__error" id="b-phone-err">
+                    {phone.trim() ? "That doesn't look like a South African cellphone number." : "Please enter your cellphone number."}
+                  </p>
+                )}
               </div>
+              <p className="form__note form__note--req">
+                <span className="req" aria-hidden>*</span> Required
+              </p>
               <div className="field">
                 <label htmlFor="b-notes">
                   Anything we should know? <span className="hint">(optional)</span>
@@ -665,9 +697,7 @@ export function Booker() {
                 </p>
               )}
               {tried && !stepValid[3] && (
-                <p className="booker__error">
-                  {name.trim().length < 2 ? "Please add your name." : "Please add a valid South African cellphone number."}
-                </p>
+                <p className="booker__error">Please fill in your name and cellphone number above.</p>
               )}
               <div className="booker__send">
                 <button type="button" className="btn btn--primary" onClick={() => send("whatsapp")} disabled={sending}>

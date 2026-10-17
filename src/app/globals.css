@@ -2480,3 +2480,23 @@ body:has(.booker) .wa-fab {
     grid-template-columns: 1fr;
   }
 }
+
+/* Required fields */
+.req {
+  color: #c0392b;
+  font-weight: 700;
+}
+.field__error {
+  margin: 2px 0 0;
+  color: #a1281b;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.field input[aria-invalid="true"],
+.field textarea[aria-invalid="true"] {
+  border-color: #c0392b;
+  background: #fff8f7;
+}
+.form__note--req {
+  margin: -4px 0 14px;
+}
