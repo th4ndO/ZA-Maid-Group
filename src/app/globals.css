@@ -1933,7 +1933,7 @@ body:has(.booker) .wa-fab {
   margin-bottom: 20px;
 }
 .booker__options--3 {
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   margin-top: 20px;
 }
 .booker__option {
@@ -2423,4 +2423,60 @@ body:has(.booker) .wa-fab {
 .booker__send .btn:disabled {
   opacity: 0.7;
   cursor: progress;
+}
+
+/* Step 3: open slots vs custom time */
+.seg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  margin: 4px 0 18px;
+  border-radius: var(--radius-pill);
+  background: var(--mist);
+  border: 1px solid var(--line);
+}
+.seg button {
+  min-height: 44px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--navy);
+  font: 600 0.9375rem var(--font-sans), sans-serif;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.seg button[aria-selected="true"] {
+  background: var(--royal);
+  color: var(--white);
+  box-shadow: 0 4px 10px rgb(43 89 168 / 0.25);
+}
+.custom-when {
+  animation: rise 0.3s ease;
+}
+.custom-time {
+  margin-top: 16px;
+}
+.custom-time input {
+  max-width: 220px;
+  font-size: 1.125rem;
+}
+.booker__hint--after {
+  margin: 12px 0 0;
+}
+.linklike {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--royal);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+@media (max-width: 420px) {
+  .booker__options--3 {
+    grid-template-columns: 1fr;
+  }
 }

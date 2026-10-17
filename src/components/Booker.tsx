@@ -84,6 +84,9 @@ export function Booker() {
   const [unit, setUnit] = useState("");
   const [date, setDate] = useState<Date | null>(null);
   const [time, setTime] = useState<string | null>(null);
+  // Step 3: "slots" = Zinhle's Google booking page, "custom" = a day + exact start time we confirm.
+  const [whenMode, setWhenMode] = useState<"slots" | "custom">("slots");
+  const [customTime, setCustomTime] = useState("");
   const [booked, setBooked] = useState(false); // ticked after picking a slot on Google's page
   const google = booking.googleBookingUrl;
   // Short calendar.app.google links redirect to a page Google may not allow inside another
@@ -110,11 +113,18 @@ export function Booker() {
   const discount = wantsDiscount ? Math.round((subtotal * firstCleanOffer.percent) / 100) : 0;
   const total = subtotal - discount + (fee?.price ?? 0);
   const timeLabel = booking.timeWindows.find((t) => t.id === time);
+  const { earliest, latest, stepMinutes } = booking.customTime;
+  const customTimeOk = /^\d{2}:\d{2}$/.test(customTime) && customTime >= earliest && customTime <= latest;
+  const isCustom = (google && whenMode === "custom") || (!google && time === "exact");
 
   const stepValid = [
     chosen.length > 0,
     place !== null || (lookup === "error" && callout !== null && area.trim().length > 4),
-    google ? booked : date !== null && time !== null,
+    isCustom
+      ? date !== null && customTimeOk
+      : google
+        ? booked
+        : date !== null && time !== null,
     name.trim().length > 1 && mobile !== null,
   ];
 
@@ -189,9 +199,11 @@ export function Booker() {
     const lines = [
       "Hi ZA Maid Group, I'd like to book a clean.",
       "",
-      google
-        ? "Time: I've booked a slot on your booking page."
-        : `Date: ${date ? longDate(date) : "-"}${timeLabel ? `, ${timeLabel.label.toLowerCase()}` : ""}`,
+      isCustom
+        ? `Requested time: ${date ? longDate(date) : "-"} at ${customTime} (custom time, please confirm)`
+        : google
+          ? "Time: I've booked a slot on your booking page."
+          : `Date: ${date ? longDate(date) : "-"}${timeLabel ? `, ${timeLabel.label.toLowerCase()}` : ""}`,
       place
         ? `Where: ${[unit.trim(), place.label].filter(Boolean).join(", ")} (verified address, about ${roadKmFromBase(place).toFixed(1)} km by road)`
         : `Where: ${area.trim()} (address not verified)`,
@@ -483,6 +495,36 @@ export function Booker() {
           {step === 2 && google && (
             <section aria-labelledby="b-when">
               <h2 id="b-when">Pick your time</h2>
+              <div className="seg" role="tablist" aria-label="How to choose a time">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={whenMode === "slots"}
+                  onClick={() => setWhenMode("slots")}
+                >
+                  Open slots
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={whenMode === "custom"}
+                  onClick={() => setWhenMode("custom")}
+                >
+                  Custom time
+                </button>
+              </div>
+              {whenMode === "custom" ? (
+                <CustomTime
+                  date={date}
+                  onDate={setDate}
+                  value={customTime}
+                  onChange={setCustomTime}
+                  earliest={earliest}
+                  latest={latest}
+                  stepMinutes={stepMinutes}
+                />
+              ) : (
+              <>
               {embeddable ? (
                 <>
                   <p className="booker__hint">
@@ -516,8 +558,20 @@ export function Booker() {
                 <input type="checkbox" checked={booked} onChange={(e) => setBooked(e.target.checked)} />
                 <span>I&apos;ve booked my time</span>
               </label>
+              <p className="booker__hint booker__hint--after">
+                None of the slots suit you?{" "}
+                <button type="button" className="linklike" onClick={() => setWhenMode("custom")}>
+                  Request a custom time
+                </button>
+              </p>
+              </>
+              )}
               {tried && !stepValid[2] && (
-                <p className="booker__error">Book a time on the calendar, then tick the box to continue.</p>
+                <p className="booker__error">
+                  {whenMode === "custom"
+                    ? `Pick a day and a start time between ${earliest} and ${latest}.`
+                    : "Book a time on the calendar, then tick the box to continue."}
+                </p>
               )}
             </section>
           )}
@@ -542,7 +596,16 @@ export function Booker() {
                   </button>
                 ))}
               </div>
-              {tried && !stepValid[2] && <p className="booker__error">Pick a day and a time to continue.</p>}
+              {time === "exact" && (
+                <TimeInput value={customTime} onChange={setCustomTime} earliest={earliest} latest={latest} stepMinutes={stepMinutes} />
+              )}
+              {tried && !stepValid[2] && (
+                <p className="booker__error">
+                  {time === "exact"
+                    ? `Pick a day and a start time between ${earliest} and ${latest}.`
+                    : "Pick a day and a time to continue."}
+                </p>
+              )}
             </section>
           )}
 
@@ -657,12 +720,17 @@ export function Booker() {
               )}
             </ul>
           )}
-          {google && booked && (
+          {isCustom && date && customTimeOk && (
+            <p className="booker__when">
+              <CalendarIcon /> {longDate(date)} at {customTime} (requested)
+            </p>
+          )}
+          {!isCustom && google && booked && (
             <p className="booker__when">
               <CalendarIcon /> Time booked on our calendar
             </p>
           )}
-          {!google && date && (
+          {!isCustom && !google && date && (
             <p className="booker__when">
               <CalendarIcon /> {longDate(date)}
               {timeLabel ? `, ${timeLabel.label.toLowerCase()}` : ""}
@@ -696,6 +764,67 @@ export function Booker() {
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function TimeInput({
+  value,
+  onChange,
+  earliest,
+  latest,
+  stepMinutes,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  earliest: string;
+  latest: string;
+  stepMinutes: number;
+}) {
+  const bad = value !== "" && (value < earliest || value > latest);
+  return (
+    <div className="field custom-time">
+      <label htmlFor="b-time">
+        Start time <span className="hint">({earliest} to {latest})</span>
+      </label>
+      <input
+        id="b-time"
+        type="time"
+        min={earliest}
+        max={latest}
+        step={stepMinutes * 60}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        aria-invalid={bad}
+      />
+      {bad && <p className="booker__error">We start between {earliest} and {latest}, Monday to Saturday.</p>}
+    </div>
+  );
+}
+
+function CustomTime(props: {
+  date: Date | null;
+  onDate: (d: Date) => void;
+  value: string;
+  onChange: (v: string) => void;
+  earliest: string;
+  latest: string;
+  stepMinutes: number;
+}) {
+  return (
+    <div className="custom-when">
+      <p className="booker__hint">
+        Choose a day and the time you&apos;d like us to start. We&apos;ll confirm on WhatsApp, or suggest the closest
+        time we can do.
+      </p>
+      <MonthCalendar value={props.date} onChange={props.onDate} />
+      <TimeInput
+        value={props.value}
+        onChange={props.onChange}
+        earliest={props.earliest}
+        latest={props.latest}
+        stepMinutes={props.stepMinutes}
+      />
     </div>
   );
 }

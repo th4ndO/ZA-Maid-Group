@@ -194,10 +194,14 @@ export const booking = {
   ),
   daysAhead: 60,
   closedWeekdays: [0] as number[], // 0 = Sunday … 6 = Saturday (closed Sundays)
+  // Custom start times customers may request (24h "HH:MM"). Open 08:00–18:00, so the latest
+  // start leaves at least an hour. TO CONFIRM with Zinhle.
+  customTime: { earliest: "08:00", latest: "17:00", stepMinutes: 15 },
   timeWindows: [
     { id: "morning", label: "Morning", detail: "Start 08:00 to 12:00" },
     { id: "afternoon", label: "Afternoon", detail: "Start after 12:00" },
     { id: "flexible", label: "Any time", detail: "Whatever suits you" },
+    { id: "exact", label: "A specific time", detail: "Choose your start time" },
   ],
 };
 
