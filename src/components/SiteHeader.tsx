@@ -68,6 +68,7 @@ export function SiteHeader() {
                   href={item.href}
                   className={isCta ? "site-nav__cta" : undefined}
                   aria-current={pathname === item.href ? "page" : undefined}
+                  onClick={() => setOpenOn(null)}
                 >
                   {Icon ? <Icon className="site-nav__icon" /> : null}
                   <span>{item.label}</span>

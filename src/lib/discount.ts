@@ -5,7 +5,8 @@ export type ClaimResult = "granted" | "already_used" | "invalid_phone" | "error"
 // South African mobile numbers: 06x/07x/08x + 7 digits, or the +27 form.
 export function normaliseSaMobile(input: string): string | null {
   let d = input.replace(/\D/g, "");
-  if (d.startsWith("0")) d = "27" + d.slice(1);
+  if (d.startsWith("270")) d = "27" + d.slice(3); // "+27 (0)71 …"
+  else if (d.startsWith("0")) d = "27" + d.slice(1);
   return /^27[678]\d{8}$/.test(d) ? d : null;
 }
 

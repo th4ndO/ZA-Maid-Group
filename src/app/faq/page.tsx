@@ -30,8 +30,9 @@ const faqs: { q: string; a: ReactNode }[] = [
     q: "What is the callout fee?",
     a: (
       <p>
-        A once-off fee per visit, for all services, based on how far we travel. It&apos;s free in the same building,{" "}
-        {rand(hatfield.price!)} elsewhere in {business.suburb}, goes up by distance to R420 for 15 to 20 km, and further than that we quote the travel.
+        It&apos;s charged once per visit, for all services, based on how far we travel: {rand(hatfield.price!)} in{" "}
+        {business.suburb}, rising by distance to {rand(calloutFees[calloutFees.length - 2].price!)} for 15 to 20 km.
+        Further than that, we quote the travel. Your exact fee is worked out from your address when you book online.
       </p>
     ),
   },
@@ -98,6 +99,18 @@ const faqs: { q: string; a: ReactNode }[] = [
   {
     q: "What if I'm not happy with the clean?",
     a: <p>{policies.satisfaction}</p>,
+  },
+  {
+    q: "What do you do with my details?",
+    a: (
+      <p>
+        When you book online, your booking (name, number, address and what you need cleaned) goes straight to us on
+        WhatsApp or email. It isn&apos;t stored on the website. If you ask for the first-clean discount, we keep a
+        scrambled record of your cellphone number (not the number itself) so the discount can only be used once.
+        Your address is looked up on OpenStreetMap to work out the callout fee. To have your details removed, email{" "}
+        <a href={`mailto:${business.email}`}>{business.email}</a>.
+      </p>
+    ),
   },
 ];
 

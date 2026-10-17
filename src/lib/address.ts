@@ -5,6 +5,10 @@ export type Place = {
   lat: number;
   lon: number;
   suburb: string | null;
+  // True when the result is a street or building, not just a suburb or city centre.
+  // Only these count as a verified address (otherwise searching "Hatfield" would give
+  // the Hatfield callout fee to anyone).
+  street: boolean;
 };
 
 type NominatimResult = {
@@ -24,7 +28,7 @@ function toPlace(r: NominatimResult): Place {
     .filter(Boolean)
     .filter((v, i, arr) => arr.indexOf(v) === i)
     .join(", ");
-  return { label: label || r.display_name, lat: Number(r.lat), lon: Number(r.lon), suburb };
+  return { label: label || r.display_name, lat: Number(r.lat), lon: Number(r.lon), suburb, street: Boolean(a.road) };
 }
 
 function insideArea(p: Place) {
@@ -34,7 +38,20 @@ function insideArea(p: Place) {
 
 // Nominatim's usage policy: no autocomplete, at most one request a second. We only search
 // when the visitor presses "Find address", and the button is disabled while a search runs.
+// Remember recent answers and keep at least a second between requests.
+const cache = new Map<string, Place[]>();
+let lastRequest = 0;
+async function politeWait() {
+  const wait = lastRequest + 1000 - Date.now();
+  if (wait > 0) await new Promise((r) => setTimeout(r, wait));
+  lastRequest = Date.now();
+}
+
 export async function searchAddress(query: string): Promise<Place[]> {
+  const key = query.trim().toLowerCase();
+  const hit = cache.get(key);
+  if (hit) return hit;
+  await politeWait();
   const [west, north, east, south] = addressCheck.bbox;
   const params = new URLSearchParams({
     q: query,
@@ -49,10 +66,13 @@ export async function searchAddress(query: string): Promise<Place[]> {
   const res = await fetch(`${NOMINATIM}/search?${params}`, { headers: { Accept: "application/json" } });
   if (!res.ok) throw new Error(`Address lookup failed (${res.status})`);
   const data = (await res.json()) as NominatimResult[];
-  return data.map(toPlace).filter(insideArea);
+  const places = data.map(toPlace).filter((p) => insideArea(p) && p.street);
+  cache.set(key, places);
+  return places;
 }
 
 export async function reverseLookup(lat: number, lon: number): Promise<Place | null> {
+  await politeWait();
   const params = new URLSearchParams({
     lat: String(lat),
     lon: String(lon),
@@ -64,7 +84,7 @@ export async function reverseLookup(lat: number, lon: number): Promise<Place | n
   const res = await fetch(`${NOMINATIM}/reverse?${params}`, { headers: { Accept: "application/json" } });
   if (!res.ok) throw new Error(`Address lookup failed (${res.status})`);
   const place = toPlace((await res.json()) as NominatimResult);
-  return insideArea(place) ? place : null;
+  return insideArea(place) && place.street ? place : null;
 }
 
 // Great-circle distance in km.
@@ -86,7 +106,7 @@ export function roadKmFromBase(p: Place) {
 // (0, same building, is only ever set by the visitor ticking that box.)
 export function calloutIndexFor(p: Place): number {
   const km = roadKmFromBase(p);
-  if ((p.suburb ?? "").toLowerCase() === "hatfield" || km <= addressCheck.hatfieldKm) return 1;
+  if ((p.suburb ?? "").toLowerCase() === "hatfield") return 1;
   const bands = [5, 10, 15, 20];
   const i = bands.findIndex((max) => km <= max);
   const index = i === -1 ? 6 : i + 2;

@@ -48,7 +48,7 @@ export default function AboutPage() {
             <h2>Work for students, care for your space</h2>
             <p className="lede">
               We give students who are willing to work the chance to earn, and they get paid the same day. You get a
-              careful, trained cleaner, and your booking helps someone through their studies.
+              careful cleaner, and your booking helps someone through their studies.
             </p>
           </div>
           <ul className="ticks">

@@ -30,7 +30,7 @@ export const policies = {
   products:
     "We bring our own cleaning products. If you have products you'd prefer us to use, we're happy to use those instead.",
   satisfaction:
-    "We don't leave until you've told us you're happy with the clean. If something isn't right, we sort it out there and then.",
+    "We don't leave until you've told us you're happy with the clean. If something isn't right, tell us before we go and we'll clean it again.",
   // TO CONFIRM: deposit amount, when it's paid and how (the price list says "payment via EFT or cash").
   cancellation:
     "Cancel at least 24 hours before your clean and your deposit is refunded. If you cancel later than that, the deposit isn't refunded. You can always move your clean to the next available date for free.",
@@ -40,7 +40,7 @@ export const policies = {
 // TO CONFIRM with Zinhle before launch: the edited wording, especially "bit by bit".
 export const founderStory = [
   "I started ZA Maid Group in 2026, when I saw how hard it was to find good cleaning services in Duncan Court. I talked it through with a friend and we saw the gap. I crunched the numbers, and it all made sense.",
-  "I've always had a big dream of building a self-sustaining shelter, and bit by bit, ZA Maid has become one of the main ways that dream is becoming a reality. We give students who are willing to work the chance to earn, and get paid the same day.",
+  "I've always had a big dream of building a self-sustaining shelter, and bit by bit, ZA Maid has become one of the main ways that dream is becoming a reality. We give students who are willing to work the chance to earn, and they get paid the same day.",
   "ZA Maid is here to help people, and I know it's going to change the world. We love to clean. We love the transformation, the before and after. It's a beautiful sight to see a place sparkling clean. The ZA Maid team loves to clean and loves to serve.",
 ];
 
@@ -50,10 +50,11 @@ export function whatsappLink(message?: string) {
 }
 
 export const highlights = [
-  { title: "Trusted & trained staff", body: "Trained people who treat your space with care." },
+  // From the social post in ZA Maid's brand kit. TO CONFIRM with Zinhle that staff are trained.
+  { title: "Trusted & trained staff", body: "Careful people who treat your space with respect." },
   { title: "Quality products", body: "We bring our own, or use yours if you prefer." },
   { title: "Flexible scheduling", body: "Monday to Saturday, 08:00 to 18:00." },
-  { title: "Satisfaction guaranteed", body: "We don't leave until you're happy with the clean." },
+  { title: "We don't leave until you're happy", body: "You check the clean before we go." },
 ];
 
 export type ServiceSummary = { slug: string; title: string; body: string };
@@ -216,7 +217,7 @@ export const addressCheck = {
   // Roughly the City of Tshwane: [west, north, east, south].
   bbox: [27.85, -25.35, 28.75, -26.05] as const,
   // Distances (by road, km) for each callout band, matching `calloutFees` above.
-  hatfieldKm: 2,
+  // (Only addresses OpenStreetMap places in the suburb of Hatfield get the Hatfield fee.)
 };
 
 // First-clean discount check: one per phone number, recorded (as a keyed hash, never the

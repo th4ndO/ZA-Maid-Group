@@ -63,7 +63,7 @@ export function SiteFooter() {
             © {year} {business.name}. <span className="site-footer__tagline">{business.tagline}</span>
           </span>
           <span>
-            Website by{" "}
+            <Link href="/privacy">Privacy</Link> ·{" "}Website by{" "}
             <a href="https://www.instagram.com/profound_productionss/" target="_blank" rel="noopener">
               Profound Productions
             </a>

@@ -22,7 +22,7 @@ const sans = Montserrat({
 });
 
 const description =
-  "Home, apartment and office cleaning anywhere in Pretoria, from Hatfield. Clear prices, trained staff, Monday to Saturday. Book online or WhatsApp 071 510 4638.";
+  "Home, apartment and office cleaning anywhere in Pretoria, from Hatfield. Clear prices, Monday to Saturday. Book online or WhatsApp 071 510 4638.";
 
 export const metadata: Metadata = {
   metadataBase: siteUrl(),

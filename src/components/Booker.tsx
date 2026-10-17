@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
   booking,
@@ -16,8 +17,9 @@ import { claimFirstClean, displayMobile, normaliseSaMobile, type ClaimResult } f
 import { CalendarIcon, CheckIcon, MailIcon, PinIcon, WhatsAppIcon } from "./icons";
 
 // Online booking *request*. Visitors build their clean from the real price list, pick a
-// day and a time window, and send it to ZA Maid on WhatsApp (or email). There is no
-// live availability: ZA Maid confirms every booking. Nothing is stored on the site.
+// day and a time window, and send it to ZA Maid on WhatsApp (or email). ZA Maid confirms
+// every booking. The booking itself isn't stored by the site; the only thing kept is a
+// hashed phone number when the first-clean discount is claimed (see src/lib/discount.ts).
 
 type Item = {
   id: string;
@@ -39,7 +41,7 @@ const items: Item[] = [
       name: i.name,
       price: i.price,
       kind: i.name.toLowerCase().includes("per square metre") ? "sqm" : "count",
-      note: g.id === "mattress-cleaning" ? "per side" : undefined,
+      note: g.id === "mattress-cleaning" ? "per side (add 2 for both sides)" : undefined,
     })),
   ),
   ...monthlyPlans.map<Item>((p) => ({
@@ -60,7 +62,7 @@ function lineTotal(item: Item, qty: number) {
   return item.price * qty;
 }
 
-const STEPS = ["What", "Where", "When", "You"] as const;
+const STEPS = ["What", "Where", "When", "Details"] as const;
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 function startOfDay(d: Date) {
@@ -69,6 +71,18 @@ function startOfDay(d: Date) {
 function sameDay(a: Date, b: Date) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
+// "HH:MM" or "HH:MM:SS" → minutes since midnight.
+function toMinutes(t: string): number | null {
+  const m = /^(\d{2}):(\d{2})(?::\d{2})?$/.exec(t);
+  return m ? Number(m[1]) * 60 + Number(m[2]) : null;
+}
+function timeAllowed(t: string, earliest: string, latest: string, step: number) {
+  const v = toMinutes(t);
+  const lo = toMinutes(earliest)!;
+  const hi = toMinutes(latest)!;
+  return v !== null && v >= lo && v <= hi && (v - lo) % step === 0;
+}
+
 const longDate = (d: Date) =>
   d.toLocaleDateString("en-ZA", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 
@@ -79,7 +93,7 @@ export function Booker() {
   const [area, setArea] = useState("");
   const [place, setPlace] = useState<Place | null>(null);
   const [results, setResults] = useState<Place[] | null>(null);
-  const [lookup, setLookup] = useState<"idle" | "busy" | "none" | "error">("idle");
+  const [lookup, setLookup] = useState<"idle" | "busy" | "none" | "error" | "nolocation">("idle");
   const [sameBuilding, setSameBuilding] = useState(false);
   const [unit, setUnit] = useState("");
   const [date, setDate] = useState<Date | null>(null);
@@ -88,6 +102,7 @@ export function Booker() {
   const [whenMode, setWhenMode] = useState<"slots" | "custom">("slots");
   const [customTime, setCustomTime] = useState("");
   const [booked, setBooked] = useState(false); // ticked after picking a slot on Google's page
+  const [bookedWhen, setBookedWhen] = useState(""); // the day/time they picked there, so ZA Maid can match it
   const google = booking.googleBookingUrl;
   // Short calendar.app.google links redirect to a page Google may not allow inside another
   // site, so they open in a new tab; full calendar.google.com links (embed mode) show inline.
@@ -115,16 +130,16 @@ export function Booker() {
   const total = subtotal - discount + (fee?.price ?? 0);
   const timeLabel = booking.timeWindows.find((t) => t.id === time);
   const { earliest, latest, stepMinutes } = booking.customTime;
-  const customTimeOk = /^\d{2}:\d{2}$/.test(customTime) && customTime >= earliest && customTime <= latest;
+  const customTimeOk = timeAllowed(customTime, earliest, latest, stepMinutes);
   const isCustom = (google && whenMode === "custom") || (!google && time === "exact");
 
   const stepValid = [
     chosen.length > 0,
-    place !== null || (lookup === "error" && callout !== null && area.trim().length > 4),
+    place !== null || (lookup === "error" && callout !== null && area.trim().length >= 4),
     isCustom
       ? date !== null && customTimeOk
       : google
-        ? booked
+        ? booked && bookedWhen.trim().length >= 4
         : date !== null && time !== null,
     name.trim().length > 1 && mobile !== null,
   ];
@@ -132,7 +147,12 @@ export function Booker() {
   const change = (item: Item, delta: number) =>
     setQty((q) => {
       const next = Math.max(0, Math.min(item.max ?? 999, (q[item.id] ?? 0) + delta));
-      return { ...q, [item.id]: next };
+      const updated = { ...q, [item.id]: next };
+      // Only one monthly plan at a time: choosing one replaces the other.
+      if (item.group === "Monthly plans" && next > 0) {
+        for (const other of items) if (other.group === "Monthly plans" && other.id !== item.id) updated[other.id] = 0;
+      }
+      return updated;
     });
 
   const next = () => {
@@ -155,7 +175,7 @@ export function Booker() {
     setLookup("busy");
     setResults(null);
     try {
-      const found = await searchAddress(q);
+      const found = await searchAddress(q); // cached and spaced ≥1 s apart (OSM usage policy)
       setResults(found);
       setLookup(found.length ? "idle" : "none");
       if (found.length === 1) choosePlace(found[0]);
@@ -165,10 +185,15 @@ export function Booker() {
   }
 
   function useMyLocation() {
-    if (!("geolocation" in navigator)) return;
-    setLookup("busy");
+    if (!("geolocation" in navigator)) {
+      setLookup("nolocation");
+      return;
+    }
+    // Only show "busy" once we have a position: some browsers never answer if the
+    // permission prompt is dismissed, which would otherwise leave the search stuck.
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
+        setLookup("busy");
         try {
           const found = await reverseLookup(pos.coords.latitude, pos.coords.longitude);
           if (found) {
@@ -183,7 +208,7 @@ export function Booker() {
           setLookup("error");
         }
       },
-      () => setLookup("idle"),
+      () => setLookup("nolocation"),
       { enableHighAccuracy: true, timeout: 15000 },
     );
   }
@@ -203,7 +228,7 @@ export function Booker() {
       isCustom
         ? `Requested time: ${date ? longDate(date) : "-"} at ${customTime} (custom time, please confirm)`
         : google
-          ? "Time: I've booked a slot on your booking page."
+          ? `Time: booked on your calendar for ${bookedWhen.trim()}`
           : `Date: ${date ? longDate(date) : "-"}${timeLabel ? `, ${timeLabel.label.toLowerCase()}` : ""}`,
       place
         ? `Where: ${[unit.trim(), place.label].filter(Boolean).join(", ")} (verified address, about ${roadKmFromBase(place).toFixed(1)} km by road)`
@@ -219,6 +244,8 @@ export function Booker() {
       "",
       `Callout fee: ${fee ? (fee.price === null ? "to be quoted" : rand(fee.price)) : "-"}${fee ? ` (${fee.label}${fee.detail ? `, ${fee.detail}` : ""})` : ""}`,
     ];
+    if (chosen.some((i) => i.group === "Monthly plans"))
+      lines.push("Monthly plan: the callout fee applies per visit. Please confirm the total for the month.");
     if (discount) lines.push(`First clean ${firstCleanOffer.percent}% off (checked online for this number): -${rand(discount)}`);
     if (firstClean && c === "error") lines.push("First clean: please check my first-clean discount (the online check didn't work).");
     lines.push(
@@ -236,6 +263,8 @@ export function Booker() {
   async function send(via: "whatsapp" | "email") {
     if (!stepValid.every(Boolean) || !mobile) {
       setTried(true);
+      const firstBad = stepValid.indexOf(false);
+      if (firstBad !== -1 && firstBad !== step) setStep(firstBad);
       return;
     }
     if (firstClean && firstCleanOffer.enabled && claim !== "granted" && claim !== "already_used") {
@@ -372,6 +401,8 @@ export function Booker() {
                     onClick={() => {
                       setPlace(null);
                       setResults(null);
+                      setUnit("");
+                      setSameBuilding(false);
                     }}
                   >
                     Change
@@ -408,19 +439,17 @@ export function Booker() {
                       </button>
                     </div>
                   </div>
-                  <button type="button" className="text-link addr-locate" onClick={useMyLocation}>
+                  <button type="button" className="text-link addr-locate" onClick={useMyLocation} disabled={lookup === "busy"}>
                     <PinIcon /> Use my current location
                   </button>
 
                   {results && results.length > 1 && (
-                    <div className="addr-results" role="radiogroup" aria-label="Matching addresses">
+                    <div className="addr-results" role="group" aria-label="Matching addresses">
                       <p className="booker__hint">Which one is it?</p>
-                      {results.map((r) => (
+                      {results.map((r, i) => (
                         <button
-                          key={`${r.lat},${r.lon}`}
+                          key={i}
                           type="button"
-                          role="radio"
-                          aria-checked={false}
                           className="booker__option"
                           onClick={() => choosePlace(r)}
                         >
@@ -431,7 +460,13 @@ export function Booker() {
                   )}
                   {lookup === "none" && (
                     <p className="booker__error">
-                      We couldn&apos;t find that address in Pretoria. Try adding the suburb, or check the spelling.
+                      We couldn&apos;t find that street address in Pretoria. Include the street number and name (and the
+                      suburb if you like), and check the spelling.
+                    </p>
+                  )}
+                  {lookup === "nolocation" && (
+                    <p className="booker__notice">
+                      We couldn&apos;t get your location. Please type your street address instead.
                     </p>
                   )}
                   {lookup === "error" && (
@@ -496,19 +531,17 @@ export function Booker() {
           {step === 2 && google && (
             <section aria-labelledby="b-when">
               <h2 id="b-when">Pick your time</h2>
-              <div className="seg" role="tablist" aria-label="How to choose a time">
+              <div className="seg" role="group" aria-label="How to choose a time">
                 <button
                   type="button"
-                  role="tab"
-                  aria-selected={whenMode === "slots"}
+                  aria-pressed={whenMode === "slots"}
                   onClick={() => setWhenMode("slots")}
                 >
                   Open slots
                 </button>
                 <button
                   type="button"
-                  role="tab"
-                  aria-selected={whenMode === "custom"}
+                  aria-pressed={whenMode === "custom"}
                   onClick={() => setWhenMode("custom")}
                 >
                   Custom time
@@ -559,6 +592,21 @@ export function Booker() {
                 <input type="checkbox" checked={booked} onChange={(e) => setBooked(e.target.checked)} />
                 <span>I&apos;ve booked my time</span>
               </label>
+              {booked && (
+                <div className="field booked-when">
+                  <label htmlFor="b-booked-when">
+                    Which day and time did you book? <span className="req" aria-hidden>*</span>
+                  </label>
+                  <input
+                    id="b-booked-when"
+                    value={bookedWhen}
+                    onChange={(e) => setBookedWhen(e.target.value)}
+                    placeholder="e.g. Tuesday 21 October, 09:00"
+                    required
+                    aria-required="true"
+                  />
+                </div>
+              )}
               <p className="booker__hint booker__hint--after">
                 None of the slots suit you?{" "}
                 <button type="button" className="linklike" onClick={() => setWhenMode("custom")}>
@@ -571,7 +619,7 @@ export function Booker() {
                 <p className="booker__error">
                   {whenMode === "custom"
                     ? `Pick a day and a start time between ${earliest} and ${latest}.`
-                    : "Book a time on the calendar, then tick the box to continue."}
+                    : "Book a time on the calendar, tick the box and tell us the day and time you booked."}
                 </p>
               )}
             </section>
@@ -672,7 +720,7 @@ export function Booker() {
                   id="b-notes"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="e.g. pets at home, gate code, parking"
+                  placeholder="e.g. pets at home, parking"
                 />
               </div>
               {firstCleanOffer.enabled && claim !== "already_used" && (
@@ -686,7 +734,8 @@ export function Booker() {
                     }}
                   />
                   <span>
-                    This is my first clean with ZA Maid ({firstCleanOffer.percent}% off, one per cellphone number)
+                    This is my first clean with ZA Maid ({firstCleanOffer.percent}% off services, not the callout fee; one per
+                    cellphone number)
                   </span>
                 </label>
               )}
@@ -699,6 +748,12 @@ export function Booker() {
               {tried && !stepValid[3] && (
                 <p className="booker__error">Please fill in your name and cellphone number above.</p>
               )}
+              <p className="booker__privacy">
+                We use your name, number, address and notes only to arrange your clean. They reach us on WhatsApp or
+                email when you press send there. If you claim the first-clean discount, we keep a scrambled copy of
+                your number so each number gets it once. Please don&apos;t include gate or alarm codes.{" "}
+                <Link href="/privacy">Privacy notice</Link>
+              </p>
               <div className="booker__send">
                 <button type="button" className="btn btn--primary" onClick={() => send("whatsapp")} disabled={sending}>
                   <WhatsAppIcon /> {sending ? "Checking…" : "Send booking on WhatsApp"}
@@ -710,11 +765,13 @@ export function Booker() {
               <p className="form__note" aria-live="polite">
                 {sent
                   ? `Your ${sent === "whatsapp" ? "WhatsApp" : "email app"} should have opened with your booking. Just press send there. We'll confirm the time and final price.`
-                  : firstClean && claim !== "already_used"
+                  : isCustom
+                    ? "This is a request for your chosen time. We'll confirm the time, final price and any deposit on WhatsApp."
+                    : firstClean && claim !== "already_used"
                     ? "We check the first-clean discount against your number when you send. We keep only a scrambled record of the number, to stop repeat claims."
                     : google
-                    ? "Your time is booked. Send us this list so we know what to bring. We'll confirm the final price."
-                    : "This is a booking request. We'll confirm the time and final price with you before the clean."}
+                    ? "Send us this list so we know what to bring. We'll confirm the final price and any deposit."
+                    : "This is a booking request. We'll confirm the time, final price and any deposit before the clean."}
               </p>
             </section>
           )}
@@ -779,7 +836,10 @@ export function Booker() {
       <div className="booker__bar">
         <div className="booker__bar-total">
           <small>Estimate</small>
-          <strong>{rand(total)}</strong>
+          <strong>
+            {rand(total)}
+            {fee?.price === null ? " + travel" : ""}
+          </strong>
         </div>
         <div className="booker__bar-actions">
           {step > 0 && (
@@ -811,7 +871,7 @@ function TimeInput({
   latest: string;
   stepMinutes: number;
 }) {
-  const bad = value !== "" && (value < earliest || value > latest);
+  const bad = value !== "" && !timeAllowed(value, earliest, latest, stepMinutes);
   return (
     <div className="field custom-time">
       <label htmlFor="b-time">
@@ -827,7 +887,11 @@ function TimeInput({
         onChange={(e) => onChange(e.target.value)}
         aria-invalid={bad}
       />
-      {bad && <p className="booker__error">We start between {earliest} and {latest}, Monday to Saturday.</p>}
+      {bad && (
+        <p className="booker__error">
+          Choose a start time between {earliest} and {latest}, on the quarter hour (e.g. 09:15), Monday to Saturday.
+        </p>
+      )}
     </div>
   );
 }
@@ -894,7 +958,7 @@ function MonthCalendar({ value, onChange }: { value: Date | null; onChange: (d: 
           ›
         </button>
       </div>
-      <div className="cal__grid" role="grid">
+      <div className="cal__grid">
         {WEEKDAYS.map((d) => (
           <span key={d} className="cal__wd" aria-hidden>
             {d[0]}

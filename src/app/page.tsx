@@ -84,8 +84,8 @@ export default function Home() {
             <p className="label">Real prices, no surprises</p>
             <h2>Know what you&apos;ll pay</h2>
             <p className="lede hide-mobile">
-              Every price is on our list, from a R69 shower clean to monthly deep-clean plans. A small callout fee is
-              added per visit, based on distance.
+              Every price is on our list, from a R69 shower clean to monthly deep-clean plans. A callout fee is added
+              per visit, based on distance.
             </p>
             <Link className="btn btn--primary hide-mobile" href="/services">
               Full price list
@@ -120,14 +120,14 @@ export default function Home() {
           <ol className="steps">
             <li>
               <strong>Tell us what needs cleaning</strong>
-              <p>On WhatsApp or the quote form.</p>
+              <p>Book online or send us a WhatsApp.</p>
             </li>
             <li>
               <strong>Get your price and a time</strong>
               <p>Including the callout fee. No surprises.</p>
             </li>
             <li>
-              <strong>Come home to a clean space</strong>
+              <strong>Enjoy your clean space</strong>
               <p>Pay via {business.payment}.</p>
             </li>
           </ol>

@@ -71,3 +71,22 @@ $$;
 
 revoke all on function public.za_maid_claim_first_clean(text) from public;
 grant execute on function public.za_maid_claim_first_clean(text) to anon, authenticated;
+
+-- ---------------------------------------------------------------------------
+-- Migration "za_maid_first_clean_discount_hardening" (17 Oct 2026, after security review):
+-- * at most 30 NEW claims per hour across all numbers; beyond that the function returns
+--   'busy' and the site sends the booking without the discount, asking ZA Maid to check
+-- * "+27 (0)71 ..." numbers are accepted (27 0 71... -> 27 71...)
+-- * explicit revoke on za_maid_private.settings; index on first_claimed_at
+-- The function body above was replaced with the version that adds, before the insert:
+--
+--   if (select count(*) from public.za_maid_discount_claims c
+--        where c.first_claimed_at > now() - interval '1 hour') >= 30 then
+--     return 'busy';
+--   end if;
+--
+-- and normalises with:  if digits like '270%' then digits := '27' || substr(digits, 4);
+--                       elsif digits like '0%' then digits := '27' || substr(digits, 2); end if;
+revoke all on za_maid_private.settings from public, anon, authenticated;
+create index if not exists za_maid_discount_claims_first_claimed_at_idx
+  on public.za_maid_discount_claims (first_claimed_at);

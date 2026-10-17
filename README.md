@@ -20,8 +20,9 @@ image, favicon and app icons from the brand kit.
 - **Brand tokens** (Navy `#0F2340`, Royal `#2B59A8`, Sky `#A9C8EE`, Mist `#EEF2F7`, Ink `#121417`),
   Bodoni Moda + Montserrat: `src/app/globals.css`, `src/app/layout.tsx`.
 - **Logos:** `public/brand/` (SVGs copied unchanged from the brand kit).
-- **Quote form:** `src/components/QuoteForm.tsx`. It has no backend: it opens WhatsApp or the
-  visitor's email app with the request filled in. Nothing is stored and no API keys are needed.
+- **Booking:** `src/components/Booker.tsx` (4 steps). It opens WhatsApp or the visitor's email app
+  with the booking filled in; the booking itself isn't stored. The only thing stored is a hashed
+  phone number when the first-clean discount is claimed (see below). Privacy notice: `/privacy`.
 
 ## Develop
 
@@ -62,8 +63,9 @@ Zinhle's answers are in (hours Mon–Sat 08:00–18:00, anywhere in Pretoria, pr
 
 ## Online booking
 
-`/contact` has a 4-step booker (services → area → time → details) that sends the booking to
-ZA Maid on WhatsApp or email. Nothing is stored on the site.
+`/contact` has a 4-step booker (services → address → time → details) that sends the booking to
+ZA Maid on WhatsApp or email. The booking isn't stored; see "Address check and first-clean
+discount" for the one thing that is.
 
 **Real availability (free):** Zinhle creates a Google Calendar *appointment schedule* in her own
 Google account, then in Vercel → Project → Settings → Environment Variables add
