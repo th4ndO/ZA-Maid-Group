@@ -76,8 +76,8 @@ const faqs: { q: string; a: ReactNode }[] = [
           q: "Is there a discount for new clients?",
           a: (
             <p>
-              Yes. First-time customers get {firstCleanOffer.percent}% off their first clean or service. Tick the box
-              when you book online, or mention it on WhatsApp.
+              Yes. First-time customers get {firstCleanOffer.percent}% off their first clean or service, once per
+              cellphone number. Tick the box when you book online and we check your number automatically.
             </p>
           ),
         },

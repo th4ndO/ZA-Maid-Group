@@ -11,7 +11,9 @@ import {
   rand,
   whatsappLink,
 } from "@/content/site";
-import { CalendarIcon, CheckIcon, MailIcon, WhatsAppIcon } from "./icons";
+import { calloutIndexFor, mapsLink, reverseLookup, roadKmFromBase, searchAddress, type Place } from "@/lib/address";
+import { claimFirstClean, displayMobile, normaliseSaMobile, type ClaimResult } from "@/lib/discount";
+import { CalendarIcon, CheckIcon, MailIcon, PinIcon, WhatsAppIcon } from "./icons";
 
 // Online booking *request*. Visitors build their clean from the real price list, pick a
 // day and a time window, and send it to ZA Maid on WhatsApp (or email). There is no
@@ -73,8 +75,13 @@ const longDate = (d: Date) =>
 export function Booker() {
   const [step, setStep] = useState(0);
   const [qty, setQty] = useState<Record<string, number>>({});
-  const [callout, setCallout] = useState<number | null>(null);
+  const [callout, setCallout] = useState<number | null>(null); // only used if the address check is down
   const [area, setArea] = useState("");
+  const [place, setPlace] = useState<Place | null>(null);
+  const [results, setResults] = useState<Place[] | null>(null);
+  const [lookup, setLookup] = useState<"idle" | "busy" | "none" | "error">("idle");
+  const [sameBuilding, setSameBuilding] = useState(false);
+  const [unit, setUnit] = useState("");
   const [date, setDate] = useState<Date | null>(null);
   const [time, setTime] = useState<string | null>(null);
   const [booked, setBooked] = useState(false); // ticked after picking a slot on Google's page
@@ -85,21 +92,30 @@ export function Booker() {
   const [name, setName] = useState("");
   const [notes, setNotes] = useState("");
   const [firstClean, setFirstClean] = useState(false);
+  const [phone, setPhone] = useState("");
+  const [claim, setClaim] = useState<ClaimResult | null>(null);
+  const [sending, setSending] = useState(false);
   const [sent, setSent] = useState<null | "whatsapp" | "email">(null);
   const [tried, setTried] = useState(false);
 
   const chosen = items.filter((i) => (qty[i.id] ?? 0) > 0);
   const subtotal = chosen.reduce((sum, i) => sum + lineTotal(i, qty[i.id]), 0);
-  const fee = callout === null ? null : calloutFees[callout];
-  const discount = firstClean && firstCleanOffer.enabled ? Math.round((subtotal * firstCleanOffer.percent) / 100) : 0;
+  // With a verified address the callout band is worked out, not chosen. If the lookup
+  // service is down, the visitor picks a band and the booking is marked "not verified".
+  const placeIndex = place ? calloutIndexFor(place) : null;
+  const calloutIndex = placeIndex !== null ? (sameBuilding && placeIndex === 1 ? 0 : placeIndex) : lookup === "error" ? callout : null;
+  const fee = calloutIndex === null ? null : calloutFees[calloutIndex];
+  const mobile = normaliseSaMobile(phone);
+  const wantsDiscount = firstClean && firstCleanOffer.enabled && claim !== "already_used" && claim !== "error";
+  const discount = wantsDiscount ? Math.round((subtotal * firstCleanOffer.percent) / 100) : 0;
   const total = subtotal - discount + (fee?.price ?? 0);
   const timeLabel = booking.timeWindows.find((t) => t.id === time);
 
   const stepValid = [
     chosen.length > 0,
-    callout !== null && area.trim().length > 1,
+    place !== null || (lookup === "error" && callout !== null && area.trim().length > 4),
     google ? booked : date !== null && time !== null,
-    name.trim().length > 1,
+    name.trim().length > 1 && mobile !== null,
   ];
 
   const change = (item: Item, delta: number) =>
@@ -122,14 +138,64 @@ export function Booker() {
     setStep((s) => Math.max(0, s - 1));
   };
 
-  function message() {
+  async function findAddress() {
+    const q = area.trim();
+    if (q.length < 4 || lookup === "busy") return;
+    setLookup("busy");
+    setResults(null);
+    try {
+      const found = await searchAddress(q);
+      setResults(found);
+      setLookup(found.length ? "idle" : "none");
+      if (found.length === 1) choosePlace(found[0]);
+    } catch {
+      setLookup("error");
+    }
+  }
+
+  function useMyLocation() {
+    if (!("geolocation" in navigator)) return;
+    setLookup("busy");
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const found = await reverseLookup(pos.coords.latitude, pos.coords.longitude);
+          if (found) {
+            setResults([found]);
+            choosePlace(found);
+            setLookup("idle");
+          } else {
+            setResults([]);
+            setLookup("none");
+          }
+        } catch {
+          setLookup("error");
+        }
+      },
+      () => setLookup("idle"),
+      { enableHighAccuracy: true, timeout: 15000 },
+    );
+  }
+
+  function choosePlace(p: Place) {
+    setPlace(p);
+    setSameBuilding(false);
+  }
+
+  function message(c: ClaimResult | null = claim) {
+    const okDiscount = firstClean && firstCleanOffer.enabled && c !== "already_used" && c !== "error";
+    const discount = okDiscount ? Math.round((subtotal * firstCleanOffer.percent) / 100) : 0;
+    const total = subtotal - discount + (fee?.price ?? 0);
     const lines = [
       "Hi ZA Maid Group, I'd like to book a clean.",
       "",
       google
         ? "Time: I've booked a slot on your booking page."
         : `Date: ${date ? longDate(date) : "-"}${timeLabel ? `, ${timeLabel.label.toLowerCase()}` : ""}`,
-      `Where: ${area.trim()}${fee ? ` (${fee.label}${fee.detail ? `, ${fee.detail}` : ""})` : ""}`,
+      place
+        ? `Where: ${[unit.trim(), place.label].filter(Boolean).join(", ")} (verified address, about ${roadKmFromBase(place).toFixed(1)} km by road)`
+        : `Where: ${area.trim()} (address not verified)`,
+      ...(place ? [`Map: ${mapsLink(place)}`] : []),
       "",
       "Services:",
       ...chosen.map((i) =>
@@ -138,26 +204,54 @@ export function Booker() {
           : `• ${qty[i.id]} × ${i.name}${i.note ? ` (${i.note})` : ""} – ${rand(lineTotal(i, qty[i.id]))}`,
       ),
       "",
-      `Callout fee: ${fee ? (fee.price === null ? "to be quoted" : rand(fee.price)) : "-"}`,
+      `Callout fee: ${fee ? (fee.price === null ? "to be quoted" : rand(fee.price)) : "-"}${fee ? ` (${fee.label}${fee.detail ? `, ${fee.detail}` : ""})` : ""}`,
     ];
-    if (discount) lines.push(`First clean ${firstCleanOffer.percent}% off: -${rand(discount)}`);
-    lines.push(`Estimated total: ${rand(total)}${fee?.price === null ? " + travel" : ""}`, "", `Name: ${name.trim()}`);
+    if (discount) lines.push(`First clean ${firstCleanOffer.percent}% off (checked online for this number): -${rand(discount)}`);
+    if (firstClean && c === "error") lines.push("First clean: please check my first-clean discount (the online check didn't work).");
+    lines.push(
+      `Estimated total: ${rand(total)}${fee?.price === null ? " + travel" : ""}`,
+      "",
+      `Name: ${name.trim()}`,
+      `Phone: ${mobile ? displayMobile(mobile) : phone.trim()}`,
+    );
     if (notes.trim()) lines.push(`Notes: ${notes.trim()}`);
     return lines.join("\n");
   }
 
-  function send(via: "whatsapp" | "email") {
-    if (!stepValid.every(Boolean)) {
+  // The discount is checked against the phone number when the booking is sent. If this number
+  // has had it before, we stop and say so; pressing send again goes ahead without it.
+  async function send(via: "whatsapp" | "email") {
+    if (!stepValid.every(Boolean) || !mobile) {
       setTried(true);
       return;
     }
-    const text = message();
-    if (via === "email") {
-      window.location.href = `mailto:${business.email}?subject=${encodeURIComponent("Booking request")}&body=${encodeURIComponent(text)}`;
-    } else {
-      window.open(whatsappLink(text), "_blank", "noopener");
+    if (firstClean && firstCleanOffer.enabled && claim !== "granted" && claim !== "already_used") {
+      setSending(true);
+      const result = await claimFirstClean(mobile);
+      setSending(false);
+      setClaim(result);
+      if (result === "already_used") return; // show the notice; the next press sends without the discount
+      if (result === "invalid_phone") {
+        setTried(true);
+        return;
+      }
+      // "granted" or "error": carry on (an error sends without the discount, asking ZA Maid to check).
+      sendNow(via, result);
+      return;
     }
+    sendNow(via, claim);
+  }
+
+  function sendNow(via: "whatsapp" | "email", latestClaim: ClaimResult | null) {
+    // React state hasn't updated yet inside send(), so build the message with the latest claim.
+    const text = message(latestClaim);
     setSent(via);
+    // Same-tab navigation: opening a new window after the (async) check would be blocked on phones.
+    window.location.assign(
+      via === "email"
+        ? `mailto:${business.email}?subject=${encodeURIComponent("Booking request")}&body=${encodeURIComponent(text)}`
+        : whatsappLink(text),
+    );
   }
 
   return (
@@ -242,37 +336,146 @@ export function Booker() {
           {step === 1 && (
             <section aria-labelledby="b-where">
               <h2 id="b-where">Where are we cleaning?</h2>
-              <p className="booker__hint">This sets the callout fee, charged once per visit.</p>
-              <div className="booker__options" role="radiogroup" aria-label="Distance from Hatfield">
-                {calloutFees.map((c, i) => (
-                  <button
-                    key={c.label}
-                    type="button"
-                    role="radio"
-                    aria-checked={callout === i}
-                    className="booker__option"
-                    onClick={() => setCallout(i)}
-                  >
+              <p className="booker__hint">
+                We check the address on the map and work out the callout fee from the distance.
+              </p>
+
+              {place ? (
+                <div className="addr-ok">
+                  <PinIcon />
+                  <div>
+                    <strong>{place.label}</strong>
                     <span>
-                      {c.label}
-                      {c.detail ? <small>{c.detail}</small> : null}
+                      About {roadKmFromBase(place).toFixed(1)} km from us · Callout fee{" "}
+                      {fee ? (fee.price === null ? "quoted" : rand(fee.price)) : "-"}
                     </span>
-                    <strong>{c.price === null ? "Quoted" : rand(c.price)}</strong>
+                    <a href={mapsLink(place)} target="_blank" rel="noopener">
+                      Check it on the map
+                    </a>
+                  </div>
+                  <button
+                    type="button"
+                    className="addr-ok__change"
+                    onClick={() => {
+                      setPlace(null);
+                      setResults(null);
+                    }}
+                  >
+                    Change
                   </button>
-                ))}
-              </div>
-              <div className="field">
-                <label htmlFor="b-area">Suburb, street or building</label>
-                <input
-                  id="b-area"
-                  value={area}
-                  onChange={(e) => setArea(e.target.value)}
-                  autoComplete="street-address"
-                  placeholder="e.g. Hatfield, Burnett Street"
-                />
-              </div>
+                </div>
+              ) : (
+                <>
+                  <div className="field">
+                    <label htmlFor="b-area">Street address</label>
+                    <div className="addr-search">
+                      <input
+                        id="b-area"
+                        value={area}
+                        onChange={(e) => {
+                          setArea(e.target.value);
+                          if (lookup === "none") setLookup("idle");
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            findAddress();
+                          }
+                        }}
+                        autoComplete="street-address"
+                        placeholder="e.g. 1131 Burnett Street, Hatfield"
+                      />
+                      <button
+                        type="button"
+                        className="btn btn--primary"
+                        onClick={findAddress}
+                        disabled={lookup === "busy" || area.trim().length < 4}
+                      >
+                        {lookup === "busy" ? "Finding…" : "Find"}
+                      </button>
+                    </div>
+                  </div>
+                  <button type="button" className="text-link addr-locate" onClick={useMyLocation}>
+                    <PinIcon /> Use my current location
+                  </button>
+
+                  {results && results.length > 1 && (
+                    <div className="addr-results" role="radiogroup" aria-label="Matching addresses">
+                      <p className="booker__hint">Which one is it?</p>
+                      {results.map((r) => (
+                        <button
+                          key={`${r.lat},${r.lon}`}
+                          type="button"
+                          role="radio"
+                          aria-checked={false}
+                          className="booker__option"
+                          onClick={() => choosePlace(r)}
+                        >
+                          <span>{r.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {lookup === "none" && (
+                    <p className="booker__error">
+                      We couldn&apos;t find that address in Pretoria. Try adding the suburb, or check the spelling.
+                    </p>
+                  )}
+                  {lookup === "error" && (
+                    <div className="addr-fallback">
+                      <p className="booker__hint">
+                        Our address check isn&apos;t working right now. Choose your distance from Hatfield and
+                        we&apos;ll confirm the callout fee.
+                      </p>
+                      <div className="booker__options" role="radiogroup" aria-label="Distance from Hatfield">
+                        {calloutFees.map((c, i) => (
+                          <button
+                            key={c.label}
+                            type="button"
+                            role="radio"
+                            aria-checked={callout === i}
+                            className="booker__option"
+                            onClick={() => setCallout(i)}
+                          >
+                            <span>
+                              {c.label}
+                              {c.detail ? <small>{c.detail}</small> : null}
+                            </span>
+                            <strong>{c.price === null ? "Quoted" : rand(c.price)}</strong>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {place && (
+                <div className="field">
+                  <label htmlFor="b-unit">
+                    Unit, flat or building name <span className="hint">(optional)</span>
+                  </label>
+                  <input id="b-unit" value={unit} onChange={(e) => setUnit(e.target.value)} placeholder="e.g. Unit 12, Duncan Court" />
+                </div>
+              )}
+              {place && placeIndex === 1 && (
+                <label className="booker__check">
+                  <input type="checkbox" checked={sameBuilding} onChange={(e) => setSameBuilding(e.target.checked)} />
+                  <span>I&apos;m in the same building as ZA Maid (no callout fee, we&apos;ll confirm)</span>
+                </label>
+              )}
+              <p className="addr-credit">
+                Address search ©{" "}
+                <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">
+                  OpenStreetMap contributors
+                </a>
+              </p>
               {tried && !stepValid[1] && (
-                <p className="booker__error">Choose a distance and tell us the suburb or building.</p>
+                <p className="booker__error">
+                  {lookup === "error"
+                    ? "Choose your distance and type your full address."
+                    : "Find your address and pick the right one to continue."}
+                </p>
               )}
             </section>
           )}
@@ -351,6 +554,22 @@ export function Booker() {
                 <input id="b-name" value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" />
               </div>
               <div className="field">
+                <label htmlFor="b-phone">Cellphone number</label>
+                <input
+                  id="b-phone"
+                  type="tel"
+                  inputMode="tel"
+                  value={phone}
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                    setClaim(null);
+                  }}
+                  autoComplete="tel"
+                  placeholder="e.g. 071 234 5678"
+                  aria-invalid={phone.trim() !== "" && !mobile}
+                />
+              </div>
+              <div className="field">
                 <label htmlFor="b-notes">
                   Anything we should know? <span className="hint">(optional)</span>
                 </label>
@@ -361,27 +580,46 @@ export function Booker() {
                   placeholder="e.g. pets at home, gate code, parking"
                 />
               </div>
-              {firstCleanOffer.enabled && (
+              {firstCleanOffer.enabled && claim !== "already_used" && (
                 <label className="booker__check">
-                  <input type="checkbox" checked={firstClean} onChange={(e) => setFirstClean(e.target.checked)} />
+                  <input
+                    type="checkbox"
+                    checked={firstClean}
+                    onChange={(e) => {
+                      setFirstClean(e.target.checked);
+                      setClaim(null);
+                    }}
+                  />
                   <span>
-                    This is my first clean with ZA Maid ({firstCleanOffer.percent}% off)
+                    This is my first clean with ZA Maid ({firstCleanOffer.percent}% off, one per cellphone number)
                   </span>
                 </label>
               )}
-              {tried && !stepValid[3] && <p className="booker__error">Please add your name.</p>}
+              {claim === "already_used" && (
+                <p className="booker__notice">
+                  This number has already had the first-clean discount, so it isn&apos;t included. Press send to book
+                  at the normal price.
+                </p>
+              )}
+              {tried && !stepValid[3] && (
+                <p className="booker__error">
+                  {name.trim().length < 2 ? "Please add your name." : "Please add a valid South African cellphone number."}
+                </p>
+              )}
               <div className="booker__send">
-                <button type="button" className="btn btn--primary" onClick={() => send("whatsapp")}>
-                  <WhatsAppIcon /> Send booking on WhatsApp
+                <button type="button" className="btn btn--primary" onClick={() => send("whatsapp")} disabled={sending}>
+                  <WhatsAppIcon /> {sending ? "Checking…" : "Send booking on WhatsApp"}
                 </button>
-                <button type="button" className="btn btn--ghost" onClick={() => send("email")}>
+                <button type="button" className="btn btn--ghost" onClick={() => send("email")} disabled={sending}>
                   <MailIcon /> Send by email
                 </button>
               </div>
               <p className="form__note" aria-live="polite">
                 {sent
                   ? `Your ${sent === "whatsapp" ? "WhatsApp" : "email app"} should have opened with your booking. Just press send there. We'll confirm the time and final price.`
-                  : google
+                  : firstClean && claim !== "already_used"
+                    ? "We check the first-clean discount against your number when you send. We keep only a scrambled record of the number, to stop repeat claims."
+                    : google
                     ? "Your time is booked. Send us this list so we know what to bring. We'll confirm the final price."
                     : "This is a booking request. We'll confirm the time and final price with you before the clean."}
               </p>
@@ -411,7 +649,9 @@ export function Booker() {
               )}
               {discount > 0 && (
                 <li>
-                  <span>First clean −{firstCleanOffer.percent}%</span>
+                  <span>
+                    First clean −{firstCleanOffer.percent}%{claim === "granted" ? "" : " (checked when you send)"}
+                  </span>
                   <span>−{rand(discount)}</span>
                 </li>
               )}

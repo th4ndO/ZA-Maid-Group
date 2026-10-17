@@ -200,3 +200,25 @@ export const booking = {
     { id: "flexible", label: "Any time", detail: "Whatever suits you" },
   ],
 };
+
+// Address check (step 2 of the booker). Addresses are looked up on OpenStreetMap
+// (Nominatim) and must be inside the Tshwane / Pretoria area. The callout fee is worked
+// out from the distance to ZA Maid's base, so customers can't pick a cheaper band.
+export const addressCheck = {
+  // TO CONFIRM: ZA Maid's exact base. For now, the middle of Hatfield.
+  base: { lat: -25.7487, lon: 28.238 },
+  // Straight-line distance × this ≈ distance by road (roads are rarely straight).
+  roadFactor: 1.3,
+  // Roughly the City of Tshwane: [west, north, east, south].
+  bbox: [27.85, -25.35, 28.75, -26.05] as const,
+  // Distances (by road, km) for each callout band, matching `calloutFees` above.
+  hatfieldKm: 2,
+};
+
+// First-clean discount check: one per phone number, recorded (as a keyed hash, never the
+// number itself) in Supabase via the za_maid_claim_first_clean() function. These are
+// public, browser-safe values; the table itself is not readable with them.
+export const discountCheck = {
+  supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://ofbitzqczupdobofuosh.supabase.co",
+  publishableKey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? "sb_publishable_Xr63gZIZfqb9TVtomJVyQA_2drxFNIF",
+};

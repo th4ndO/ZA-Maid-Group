@@ -2321,3 +2321,106 @@ body:has(.booker) .wa-fab {
   width: 100%;
   max-width: 360px;
 }
+
+/* Address check (booking step 2) */
+.addr-search {
+  display: flex;
+  gap: 8px;
+}
+.addr-search input {
+  flex: 1;
+  min-width: 0;
+}
+.addr-search .btn {
+  flex: none;
+  min-height: 48px;
+  padding: 0 20px;
+}
+.addr-search .btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.addr-locate {
+  display: inline-flex;
+  margin: 2px 0 16px;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+.addr-results {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.addr-results .booker__option {
+  min-height: 52px;
+}
+.addr-ok {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1.5px solid var(--royal);
+  border-radius: 12px;
+  background: #e8eff9;
+  animation: rise 0.3s ease;
+}
+.addr-ok > svg {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  color: var(--royal);
+  margin-top: 2px;
+}
+.addr-ok > div {
+  flex: 1;
+  display: grid;
+  gap: 2px;
+}
+.addr-ok strong {
+  color: var(--navy);
+}
+.addr-ok span {
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+.addr-ok a {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.addr-ok__change {
+  flex: none;
+  padding: 6px 12px;
+  border: 1px solid var(--royal);
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--royal);
+  font: 600 0.875rem var(--font-sans), sans-serif;
+  cursor: pointer;
+}
+.addr-credit {
+  margin: 12px 0 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.addr-credit a {
+  color: inherit;
+}
+.booker__notice {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #fff6e0;
+  color: #6b4b00;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+.field input[aria-invalid="true"] {
+  border-color: #c0392b;
+}
+.booker__send .btn:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}

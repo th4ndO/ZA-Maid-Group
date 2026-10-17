@@ -76,3 +76,27 @@ and redeploy. Step 3 then embeds her booking page (real open slots, no double bo
 WhatsApp message still carries the service list and estimate. Without the variable, step 3 falls
 back to the built-in request calendar (days/time windows in `booking` in `src/content/site.ts`).
 Accepted links: `https://calendar.app.google/…` or `https://calendar.google.com/calendar/appointments/…`.
+
+## Address check and first-clean discount
+
+**Address (step 2).** The visitor types a street address and presses Find (or uses their location).
+It's looked up on OpenStreetMap (Nominatim, free; one search per press, as its usage policy asks)
+and must be inside Pretoria/Tshwane. The callout fee is worked out from the distance to the base
+(`addressCheck` in `src/content/site.ts`: Hatfield centre for now, straight-line × 1.3 ≈ road km),
+so visitors can't pick a cheaper band. The WhatsApp message includes the verified address and a map
+link. If the lookup service is down, the visitor picks a band and the message says "address not
+verified".
+
+**Discount (step 4).** A cellphone number is required. When a visitor ticks "first clean", the site
+calls `za_maid_claim_first_clean()` in the Profound Productions Supabase project. It stores only an
+HMAC of the number (secret key in the private `za_maid_private` schema) and answers `granted` (new
+number, or a resend within 24 h) or `already_used`. The claims table can't be read with the website
+key. If the check is down, the booking is sent without the discount and asks ZA Maid to check.
+
+**For ZA Maid when a booking arrives:** compare the "Phone:" line with the WhatsApp number it came
+from. A different number with a discount line means someone may be using another number, so check
+before honouring the 10%. No website can stop someone with a second SIM card; this check plus the
+database makes repeat claims hard, not impossible.
+
+To reset a number (e.g. a booking that never happened): in Supabase, delete its row from
+`public.za_maid_discount_claims` (ask Profound Productions; rows are hashes, so match by time).
