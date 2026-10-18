@@ -49,7 +49,7 @@ Zinhle's answers are in (hours Mon–Sat 08:00–18:00, anywhere in Pretoria, pr
 10% first clean, satisfaction, prices confirmed, founder story). Still needed:
 
 - [x] **Founder headshot** (About → Meet the team).
-- [x] **Team**: 5 names; photos for Zinhle, Precious, Zoleka, Amahle. - [ ] Amukelani's photo; everyone's OK to be shown online. Crop
+- [x] **Team**: 5 names; photos for Zinhle, Precious, Zoleka, Amahle. Everyone agreed to be shown online (Oct 2026). - [ ] Amukelani's photo. Crop
       with `python3 scripts/headshot.py IN src/assets/team-NAME.jpg EYE_X EYE_Y FACE_W` so every
       face matches, then add them to `team` in `src/content/site.ts` and `photos` in
       `src/app/about/page.tsx`.

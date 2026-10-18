@@ -241,7 +241,8 @@ export const discountCheck = {
 // About page team grid ("more people will be added as time goes"). To add someone, add a line
 // here. Members without a photo show their initials. To add a photo, crop it with
 // scripts/headshot.py, import it in app/about/page.tsx and give it a key in `photos` there.
-// TO CONFIRM: each person's role, and that each agrees to be shown online.
+// Everyone listed agreed to be shown online (confirmed via Zinhle, Oct 2026). Get the same OK
+// from anyone new before adding them.
 export type TeamPhoto = "zinhle" | "precious" | "amahle" | "zoleka";
 export const team: { name: string; role: string; photo?: TeamPhoto }[] = [
   { name: business.founder, role: "Founder", photo: "zinhle" },
