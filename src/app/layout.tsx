@@ -68,6 +68,7 @@ function localBusinessJsonLd() {
     areaServed: { "@type": "City", name: business.city },
     founder: { "@type": "Person", name: business.founder },
     foundingDate: "2026",
+    sameAs: business.socials.map((s) => s.href),
     openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],

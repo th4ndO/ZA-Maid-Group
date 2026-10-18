@@ -38,7 +38,10 @@ const faqs: { q: string; a: ReactNode }[] = [
   },
   {
     q: "How do I pay?",
-    a: <p>Via {business.payment}. We confirm the total before we start, including the callout fee.</p>,
+    a: <p>
+        Via {business.payment}. {policies.deposit} We confirm the total, including the callout fee, before we
+        start.
+      </p>,
   },
   {
     q: "How do the monthly plans work?",
@@ -77,8 +80,8 @@ const faqs: { q: string; a: ReactNode }[] = [
           q: "Is there a discount for new clients?",
           a: (
             <p>
-              Yes. First-time customers get {firstCleanOffer.percent}% off their first clean or service, once per
-              cellphone number. Tick the box when you book online and we check your number automatically.
+              Yes. First-time customers get {firstCleanOffer.percent}% off once-off services on their first booking
+              (not monthly plans or the callout fee), once per cellphone number. Tick the box when you book online and we check your number automatically.
             </p>
           ),
         },

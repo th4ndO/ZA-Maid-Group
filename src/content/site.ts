@@ -18,11 +18,15 @@ export const business = {
   serves: ["Homes", "Apartments", "Offices"],
   hours: "Monday to Saturday, 08:00 to 18:00" as string | null,
   areaServed: "Anywhere in Pretoria",
-  // TO CONFIRM: Instagram / Facebook / TikTok links.
-  socials: [] as { label: string; href: string }[],
+  // Confirmed by Zinhle (Oct 2026).
+  socials: [
+    { label: "Instagram", href: "https://www.instagram.com/za_maidgroup" },
+    { label: "TikTok", href: "https://www.tiktok.com/@za.maid" },
+  ] as { label: string; href: string }[],
 };
 
-// Confirmed by Zinhle (Oct 2026): first-time customers get 10% off their first clean or service.
+// Confirmed by Zinhle (Oct 2026): first-time customers get 10% off once-off services
+// (not monthly plans, not the callout fee).
 export const firstCleanOffer = { enabled: true, percent: 10 };
 
 // Confirmed by Zinhle (Oct 2026).
@@ -31,7 +35,9 @@ export const policies = {
     "We bring our own cleaning products. If you have products you'd prefer us to use, we're happy to use those instead.",
   satisfaction:
     "We don't leave until you've told us you're happy with the clean. If something isn't right, tell us before we go and we'll clean it again.",
-  // TO CONFIRM: deposit amount, when it's paid and how (the price list says "payment via EFT or cash").
+  // Deposit confirmed by Zinhle (Oct 2026): 50% to confirm a booking.
+  depositPercent: 50,
+  deposit: "We ask for a 50% deposit to confirm your booking. The rest is paid on the day.",
   cancellation:
     "Cancel at least 24 hours before your clean and your deposit is refunded. If you cancel later than that, the deposit isn't refunded. You can always move your clean to the next available date for free.",
 };
@@ -134,7 +140,7 @@ export const priceGroups: PriceGroup[] = [
       { name: "Wall-to-wall carpet wash", price: 400 },
       { name: "Carpet, per square metre", price: 29 },
     ],
-    note: "R100 base price for carpets smaller than 9 square metres.",
+    note: "Carpets are R100 plus R29 per square metre.",
   },
 ];
 
@@ -195,8 +201,8 @@ export const booking = {
   ),
   daysAhead: 60,
   closedWeekdays: [0] as number[], // 0 = Sunday … 6 = Saturday (closed Sundays)
-  // Custom start times customers may request (24h "HH:MM"). Open 08:00–18:00, so the latest
-  // start leaves at least an hour. TO CONFIRM with Zinhle.
+  // Custom start times customers may request (24h "HH:MM"). Latest start 17:00, confirmed
+  // by Zinhle (Oct 2026).
   customTime: { earliest: "08:00", latest: "17:00", stepMinutes: 15 },
   timeWindows: [
     { id: "morning", label: "Morning", detail: "Start 08:00 to 12:00" },
@@ -210,8 +216,10 @@ export const booking = {
 // (Nominatim) and must be inside the Tshwane / Pretoria area. The callout fee is worked
 // out from the distance to ZA Maid's base, so customers can't pick a cheaper band.
 export const addressCheck = {
-  // TO CONFIRM: ZA Maid's exact base. For now, the middle of Hatfield.
+  // ZA Maid's base is Duncan Court, Hatfield (confirmed Oct 2026). TO CONFIRM: these are
+  // the middle of Hatfield, about 1 km out; replace with Duncan Court's map pin.
   base: { lat: -25.7487, lon: 28.238 },
+  baseName: "Duncan Court",
   // Straight-line distance × this ≈ distance by road (roads are rarely straight).
   roadFactor: 1.3,
   // Roughly the City of Tshwane: [west, north, east, south].

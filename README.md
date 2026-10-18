@@ -54,13 +54,19 @@ Zinhle's answers are in (hours Mon–Sat 08:00–18:00, anywhere in Pretoria, pr
       face matches, then add them to `team` in `src/content/site.ts` and `photos` in
       `src/app/about/page.tsx`.
 - [ ] **Work photos** (Home): real before/after shots. Dashed "To add" boxes show where they go.
-- [ ] **Social links** → `business.socials` in `src/content/site.ts` (Zinhle sending them).
-- [ ] **Deposit**: the cancellation policy refers to a deposit. How much, when is it paid, how
-      (EFT/cash)? Then mention it on the booking page and price list.
+- [x] **Social links**: Instagram @za_maidgroup, TikTok @za.maid (footer + Google structured data).
+- [x] **Deposit**: 50% to confirm (shown in the booker, WhatsApp message, FAQ). - [ ] How it's
+      paid (EFT details) is still to come; for now ZA Maid sends payment details when confirming.
+- [x] **Discount**: 10% on once-off services only (not monthly plans or the callout fee). A
+      monthly-plan-only booking doesn't offer it, so it can't use up the number's claim.
+- [x] **Carpets**: R100 + R29 per m². **Latest custom start**: 17:00.
+- [ ] **Base map pin**: base is Duncan Court, Hatfield, but `addressCheck.base` is still the middle
+      of Hatfield (about 1 km out). Drop a pin on Duncan Court in Google Maps and paste the
+      coordinates in.
 - [ ] **Founder story sign-off**: lightly edited from her message (voice-typing errors fixed,
       e.g. "bit by bit"). Zinhle to approve the wording on /about.
-- [ ] **Domain**: `zamaidgroup.co.za` was available on 15 Oct 2026. Register it **in ZA Maid's
-      name** (client pays), add it to the Vercel project and set `NEXT_PUBLIC_SITE_URL`.
+- [x] **Domain**: `zamaidgroup.co.za` (Hostinger), A `@` → 216.198.79.1, CNAME `www` → Vercel.
+      - [ ] Registrant contact should be ZA Maid Group / Zinhle; agree who pays the yearly renewal.
 - [x] **Google booking page**: connected (`https://calendar.app.google/va6cm26uCpFS9umz6`). It opens
       in a new tab from step 3. For the calendar to show *inside* the page, use the full link from
       Google Calendar → the schedule → Share → **Website embed** (a `calendar.google.com/…` URL).

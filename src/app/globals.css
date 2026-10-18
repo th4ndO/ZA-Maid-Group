@@ -2147,6 +2147,12 @@ body:has(.booker) .wa-fab {
   color: var(--sky);
   flex: none;
 }
+.booker__deposit {
+  margin: 4px 0 0;
+  font-size: 0.875rem;
+  color: var(--muted);
+  text-align: right;
+}
 .booker__total {
   display: flex;
   justify-content: space-between;

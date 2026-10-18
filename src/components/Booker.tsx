@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
+  addressCheck,
   booking,
   business,
   calloutFees,
   firstCleanOffer,
   monthlyPlans,
+  policies,
   priceGroups,
   rand,
   whatsappLink,
@@ -56,9 +58,9 @@ const items: Item[] = [
 ];
 const groups = Array.from(new Set(items.map((i) => i.group)));
 
-// Carpet per m²: "R100 base price for carpets smaller than 9 square metres."
+// Carpet per m²: "R100 plus R29 per square metre."
 function lineTotal(item: Item, qty: number) {
-  if (item.kind === "sqm") return qty <= 0 ? 0 : qty < 9 ? 100 : item.price * qty;
+  if (item.kind === "sqm") return qty <= 0 ? 0 : 100 + item.price * qty;
   return item.price * qty;
 }
 
@@ -119,15 +121,21 @@ export function Booker() {
 
   const chosen = items.filter((i) => (qty[i.id] ?? 0) > 0);
   const subtotal = chosen.reduce((sum, i) => sum + lineTotal(i, qty[i.id]), 0);
+  // The first-clean discount is for once-off services only, not monthly plans.
+  const onceOff = chosen
+    .filter((i) => i.group !== "Monthly plans")
+    .reduce((sum, i) => sum + lineTotal(i, qty[i.id]), 0);
+  const canDiscount = firstCleanOffer.enabled && onceOff > 0;
   // With a verified address the callout band is worked out, not chosen. If the lookup
   // service is down, the visitor picks a band and the booking is marked "not verified".
   const placeIndex = place ? calloutIndexFor(place) : null;
   const calloutIndex = placeIndex !== null ? (sameBuilding && placeIndex === 1 ? 0 : placeIndex) : lookup === "error" ? callout : null;
   const fee = calloutIndex === null ? null : calloutFees[calloutIndex];
   const mobile = normaliseSaMobile(phone);
-  const wantsDiscount = firstClean && firstCleanOffer.enabled && claim !== "already_used" && claim !== "error";
-  const discount = wantsDiscount ? Math.round((subtotal * firstCleanOffer.percent) / 100) : 0;
+  const wantsDiscount = firstClean && canDiscount && claim !== "already_used" && claim !== "error";
+  const discount = wantsDiscount ? Math.round((onceOff * firstCleanOffer.percent) / 100) : 0;
   const total = subtotal - discount + (fee?.price ?? 0);
+  const deposit = Math.round((total * policies.depositPercent) / 100);
   const timeLabel = booking.timeWindows.find((t) => t.id === time);
   const { earliest, latest, stepMinutes } = booking.customTime;
   const customTimeOk = timeAllowed(customTime, earliest, latest, stepMinutes);
@@ -219,9 +227,10 @@ export function Booker() {
   }
 
   function message(c: ClaimResult | null = claim) {
-    const okDiscount = firstClean && firstCleanOffer.enabled && c !== "already_used" && c !== "error";
-    const discount = okDiscount ? Math.round((subtotal * firstCleanOffer.percent) / 100) : 0;
+    const okDiscount = firstClean && canDiscount && c !== "already_used" && c !== "error";
+    const discount = okDiscount ? Math.round((onceOff * firstCleanOffer.percent) / 100) : 0;
     const total = subtotal - discount + (fee?.price ?? 0);
+    const deposit = Math.round((total * policies.depositPercent) / 100);
     const lines = [
       "Hi ZA Maid Group, I'd like to book a clean.",
       "",
@@ -246,10 +255,11 @@ export function Booker() {
     ];
     if (chosen.some((i) => i.group === "Monthly plans"))
       lines.push("Monthly plan: the callout fee applies per visit. Please confirm the total for the month.");
-    if (discount) lines.push(`First clean ${firstCleanOffer.percent}% off (checked online for this number): -${rand(discount)}`);
-    if (firstClean && c === "error") lines.push("First clean: please check my first-clean discount (the online check didn't work).");
+    if (discount) lines.push(`First clean ${firstCleanOffer.percent}% off once-off services (checked online for this number): -${rand(discount)}`);
+    if (firstClean && canDiscount && c === "error") lines.push("First clean: please check my first-clean discount (the online check didn't work).");
     lines.push(
       `Estimated total: ${rand(total)}${fee?.price === null ? " + travel" : ""}`,
+      `Deposit to confirm (${policies.depositPercent}%): about ${rand(deposit)}`,
       "",
       `Name: ${name.trim()}`,
       `Phone: ${mobile ? displayMobile(mobile) : phone.trim()}`,
@@ -267,7 +277,8 @@ export function Booker() {
       if (firstBad !== -1 && firstBad !== step) setStep(firstBad);
       return;
     }
-    if (firstClean && firstCleanOffer.enabled && claim !== "granted" && claim !== "already_used") {
+    // Only claim when the discount actually applies, so a monthly-plan-only booking doesn't use it up.
+    if (firstClean && canDiscount && claim !== "granted" && claim !== "already_used") {
       setSending(true);
       const result = await claimFirstClean(mobile);
       setSending(false);
@@ -337,7 +348,7 @@ export function Booker() {
                             <div className="booker__item">
                               <span className="booker__item-name">{item.name}</span>
                               <span className="booker__item-price">
-                                {item.kind === "sqm" ? `${rand(item.price)} / m²` : rand(item.price)}
+                                {item.kind === "sqm" ? `R100 + ${rand(item.price)} / m²` : rand(item.price)}
                                 {item.note ? <small> {item.note}</small> : null}
                               </span>
                             </div>
@@ -509,7 +520,7 @@ export function Booker() {
               {place && placeIndex === 1 && (
                 <label className="booker__check">
                   <input type="checkbox" checked={sameBuilding} onChange={(e) => setSameBuilding(e.target.checked)} />
-                  <span>I&apos;m in the same building as ZA Maid (no callout fee, we&apos;ll confirm)</span>
+                  <span>I&apos;m in {addressCheck.baseName}, same building as ZA Maid (no callout fee, we&apos;ll confirm)</span>
                 </label>
               )}
               <p className="addr-credit">
@@ -723,7 +734,7 @@ export function Booker() {
                   placeholder="e.g. pets at home, parking"
                 />
               </div>
-              {firstCleanOffer.enabled && claim !== "already_used" && (
+              {canDiscount && claim !== "already_used" && (
                 <label className="booker__check">
                   <input
                     type="checkbox"
@@ -734,8 +745,8 @@ export function Booker() {
                     }}
                   />
                   <span>
-                    This is my first clean with ZA Maid ({firstCleanOffer.percent}% off services, not the callout fee; one per
-                    cellphone number)
+                    This is my first clean with ZA Maid ({firstCleanOffer.percent}% off once-off services, not monthly plans
+                    or the callout fee; one per cellphone number)
                   </span>
                 </label>
               )}
@@ -766,12 +777,12 @@ export function Booker() {
                 {sent
                   ? `Your ${sent === "whatsapp" ? "WhatsApp" : "email app"} should have opened with your booking. Just press send there. We'll confirm the time and final price.`
                   : isCustom
-                    ? "This is a request for your chosen time. We'll confirm the time, final price and any deposit on WhatsApp."
-                    : firstClean && claim !== "already_used"
+                    ? `This is a request for your chosen time. We'll confirm the time and final price on WhatsApp. ${policies.deposit}`
+                    : firstClean && canDiscount && claim !== "already_used"
                     ? "We check the first-clean discount against your number when you send. We keep only a scrambled record of the number, to stop repeat claims."
                     : google
-                    ? "Send us this list so we know what to bring. We'll confirm the final price and any deposit."
-                    : "This is a booking request. We'll confirm the time, final price and any deposit before the clean."}
+                    ? `Send us this list so we know what to bring. We'll confirm the final price. ${policies.deposit}`
+                    : `This is a booking request. We'll confirm the time and final price before the clean. ${policies.deposit}`}
               </p>
             </section>
           )}
@@ -830,6 +841,11 @@ export function Booker() {
               {fee?.price === null ? " + travel" : ""}
             </strong>
           </p>
+          {chosen.length > 0 && (
+            <p className="booker__deposit">
+              {policies.depositPercent}% deposit to confirm: about {rand(deposit)}
+            </p>
+          )}
         </aside>
       </div>
 
