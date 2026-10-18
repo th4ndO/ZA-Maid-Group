@@ -30,6 +30,7 @@ type Item = {
   price: number;
   kind: "count" | "sqm";
   max?: number;
+  visits?: number; // monthly plans: visits a month, each with a callout fee
   note?: string;
 };
 
@@ -53,6 +54,7 @@ const items: Item[] = [
     price: p.price,
     kind: "count",
     max: 1,
+    visits: p.visits,
     note: "per month",
   })),
 ];
@@ -131,10 +133,13 @@ export function Booker() {
   const placeIndex = place ? calloutIndexFor(place) : null;
   const calloutIndex = placeIndex !== null ? (sameBuilding && placeIndex === 1 ? 0 : placeIndex) : lookup === "error" ? callout : null;
   const fee = calloutIndex === null ? null : calloutFees[calloutIndex];
+  // A monthly plan has a callout fee on every visit; anything else is one visit.
+  const visits = chosen.find((i) => i.visits)?.visits ?? 1;
+  const calloutTotal = (fee?.price ?? 0) * visits;
   const mobile = normaliseSaMobile(phone);
   const wantsDiscount = firstClean && canDiscount && claim !== "already_used" && claim !== "error";
   const discount = wantsDiscount ? Math.round((onceOff * firstCleanOffer.percent) / 100) : 0;
-  const total = subtotal - discount + (fee?.price ?? 0);
+  const total = subtotal - discount + calloutTotal;
   const deposit = Math.round((total * policies.depositPercent) / 100);
   const timeLabel = booking.timeWindows.find((t) => t.id === time);
   const { earliest, latest, stepMinutes } = booking.customTime;
@@ -229,7 +234,7 @@ export function Booker() {
   function message(c: ClaimResult | null = claim) {
     const okDiscount = firstClean && canDiscount && c !== "already_used" && c !== "error";
     const discount = okDiscount ? Math.round((onceOff * firstCleanOffer.percent) / 100) : 0;
-    const total = subtotal - discount + (fee?.price ?? 0);
+    const total = subtotal - discount + calloutTotal;
     const deposit = Math.round((total * policies.depositPercent) / 100);
     const lines = [
       "Hi ZA Maid Group, I'd like to book a clean.",
@@ -251,10 +256,8 @@ export function Booker() {
           : `• ${qty[i.id]} × ${i.name}${i.note ? ` (${i.note})` : ""} – ${rand(lineTotal(i, qty[i.id]))}`,
       ),
       "",
-      `Callout fee: ${fee ? (fee.price === null ? "to be quoted" : rand(fee.price)) : "-"}${fee ? ` (${fee.label}${fee.detail ? `, ${fee.detail}` : ""})` : ""}`,
+      `Callout fee: ${fee ? (fee.price === null ? "to be quoted" : visits > 1 ? `${visits} visits × ${rand(fee.price)} = ${rand(calloutTotal)}` : rand(fee.price)) : "-"}${fee ? ` (${fee.label}${fee.detail ? `, ${fee.detail}` : ""})` : ""}`,
     ];
-    if (chosen.some((i) => i.group === "Monthly plans"))
-      lines.push("Monthly plan: the callout fee applies per visit. Please confirm the total for the month.");
     if (discount) lines.push(`First clean ${firstCleanOffer.percent}% off once-off services (checked online for this number): -${rand(discount)}`);
     if (firstClean && canDiscount && c === "error") lines.push("First clean: please check my first-clean discount (the online check didn't work).");
     lines.push(
@@ -804,8 +807,8 @@ export function Booker() {
               ))}
               {fee && (
                 <li>
-                  <span>Callout fee</span>
-                  <span>{fee.price === null ? "Quoted" : rand(fee.price)}</span>
+                  <span>Callout fee{visits > 1 && fee.price !== null ? ` (${visits} visits)` : ""}</span>
+                  <span>{fee.price === null ? "Quoted" : rand(calloutTotal)}</span>
                 </li>
               )}
               {discount > 0 && (

@@ -43,7 +43,7 @@ export const policies = {
 };
 
 // The founder's story, in Zinhle's words (lightly edited from her WhatsApp voice notes).
-// TO CONFIRM with Zinhle before launch: the edited wording, especially "bit by bit".
+// Approved by Zinhle (Oct 2026).
 export const founderStory = [
   "I started ZA Maid Group in 2026, when I saw how hard it was to find good cleaning services in Duncan Court. I talked it through with a friend and we saw the gap. I crunched the numbers, and it all made sense.",
   "I've always had a big dream of building a self-sustaining shelter, and bit by bit, ZA Maid has become one of the main ways that dream is becoming a reality. We give students who are willing to work the chance to earn, and they get paid the same day.",
@@ -56,7 +56,7 @@ export function whatsappLink(message?: string) {
 }
 
 export const highlights = [
-  // From the social post in ZA Maid's brand kit. TO CONFIRM with Zinhle that staff are trained.
+  // From the social post in ZA Maid's brand kit. Zinhle confirmed staff are trained (Oct 2026).
   { title: "Trusted & trained staff", body: "Careful people who treat your space with respect." },
   { title: "Quality products", body: "We bring our own, or use yours if you prefer." },
   { title: "Flexible scheduling", body: "Monday to Saturday, 08:00 to 18:00." },
@@ -145,10 +145,12 @@ export const priceGroups: PriceGroup[] = [
 ];
 
 export const monthlyPlans = [
-  { name: "2 monthly deep cleans", price: 650 },
-  { name: "4 monthly deep cleans", price: 1099 },
+  { name: "2 monthly deep cleans", price: 650, visits: 2 },
+  { name: "4 monthly deep cleans", price: 1099, visits: 4 },
 ];
-export const monthlyPlanNote = "Plan fee is due on or before the 1st of each month.";
+// Confirmed by Zinhle (Oct 2026): the callout fee is charged on every visit of a plan.
+export const monthlyPlanNote =
+  "Plan fee is due on or before the 1st of each month. The callout fee is added for each visit.";
 
 export const calloutFees: { label: string; detail: string; price: number | null }[] = [
   { label: "Same building", detail: "", price: 0 },

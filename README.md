@@ -62,10 +62,10 @@ Zinhle's answers are in (hours Mon–Sat 08:00–18:00, anywhere in Pretoria, pr
 - [x] **Carpets**: R100 + R29 per m². **Latest custom start**: 17:00.
 - [x] **Base**: Duncan Court, 1226 Park Street, Hatfield (-25.7483, 28.2416). Callout distances
       are measured from here.
-- [ ] **Founder story sign-off**: lightly edited from her message (voice-typing errors fixed,
-      e.g. "bit by bit"). Zinhle to approve the wording on /about.
+- [x] **Founder story**: approved by Zinhle. **Trained staff**: confirmed.
+- [x] **Monthly plans**: callout fee on every visit (2 or 4 a month), counted in the estimate.
 - [x] **Domain**: `zamaidgroup.co.za` (Hostinger), A `@` → 216.198.79.1, CNAME `www` → Vercel.
-      - [ ] Registrant contact should be ZA Maid Group / Zinhle; agree who pays the yearly renewal.
+      - [x] Zinhle pays the yearly renewal. - [ ] Registrant contact should be ZA Maid Group / Zinhle.
 - [x] **Google booking page**: connected (`https://calendar.app.google/va6cm26uCpFS9umz6`). It opens
       in a new tab from step 3. For the calendar to show *inside* the page, use the full link from
       Google Calendar → the schedule → Share → **Website embed** (a `calendar.google.com/…` URL).
