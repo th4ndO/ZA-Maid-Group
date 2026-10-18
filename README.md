@@ -55,14 +55,13 @@ Zinhle's answers are in (hours Mon–Sat 08:00–18:00, anywhere in Pretoria, pr
       `src/app/about/page.tsx`.
 - [ ] **Work photos** (Home): real before/after shots. Dashed "To add" boxes show where they go.
 - [x] **Social links**: Instagram @za_maidgroup, TikTok @za.maid (footer + Google structured data).
-- [x] **Deposit**: 50% to confirm (shown in the booker, WhatsApp message, FAQ). - [ ] How it's
-      paid (EFT details) is still to come; for now ZA Maid sends payment details when confirming.
+- [x] **Deposit**: 50% by EFT, on all bookings including monthly plans (booker, WhatsApp message,
+      FAQ). Banking details are sent by ZA Maid when confirming, not shown on the site.
 - [x] **Discount**: 10% on once-off services only (not monthly plans or the callout fee). A
       monthly-plan-only booking doesn't offer it, so it can't use up the number's claim.
 - [x] **Carpets**: R100 + R29 per m². **Latest custom start**: 17:00.
-- [ ] **Base map pin**: base is Duncan Court, Hatfield, but `addressCheck.base` is still the middle
-      of Hatfield (about 1 km out). Drop a pin on Duncan Court in Google Maps and paste the
-      coordinates in.
+- [x] **Base**: Duncan Court, 1226 Park Street, Hatfield (-25.7483, 28.2416). Callout distances
+      are measured from here.
 - [ ] **Founder story sign-off**: lightly edited from her message (voice-typing errors fixed,
       e.g. "bit by bit"). Zinhle to approve the wording on /about.
 - [x] **Domain**: `zamaidgroup.co.za` (Hostinger), A `@` → 216.198.79.1, CNAME `www` → Vercel.
@@ -94,7 +93,7 @@ Accepted links: `https://calendar.app.google/…` or `https://calendar.google.co
 **Address (step 2).** The visitor types a street address and presses Find (or uses their location).
 It's looked up on OpenStreetMap (Nominatim, free; one search per press, as its usage policy asks)
 and must be inside Pretoria/Tshwane. The callout fee is worked out from the distance to the base
-(`addressCheck` in `src/content/site.ts`: Hatfield centre for now, straight-line × 1.3 ≈ road km),
+(`addressCheck` in `src/content/site.ts`: Duncan Court, straight-line × 1.3 ≈ road km),
 so visitors can't pick a cheaper band. The WhatsApp message includes the verified address and a map
 link. If the lookup service is down, the visitor picks a band and the message says "address not
 verified".

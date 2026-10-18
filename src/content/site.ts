@@ -35,9 +35,9 @@ export const policies = {
     "We bring our own cleaning products. If you have products you'd prefer us to use, we're happy to use those instead.",
   satisfaction:
     "We don't leave until you've told us you're happy with the clean. If something isn't right, tell us before we go and we'll clean it again.",
-  // Deposit confirmed by Zinhle (Oct 2026): 50% to confirm a booking.
+  // Deposit confirmed by Zinhle (Oct 2026): 50% by EFT to confirm any booking, monthly plans included.
   depositPercent: 50,
-  deposit: "We ask for a 50% deposit to confirm your booking. The rest is paid on the day.",
+  deposit: "We ask for a 50% deposit by EFT to confirm your booking. We send our banking details when we confirm.",
   cancellation:
     "Cancel at least 24 hours before your clean and your deposit is refunded. If you cancel later than that, the deposit isn't refunded. You can always move your clean to the next available date for free.",
 };
@@ -216,9 +216,9 @@ export const booking = {
 // (Nominatim) and must be inside the Tshwane / Pretoria area. The callout fee is worked
 // out from the distance to ZA Maid's base, so customers can't pick a cheaper band.
 export const addressCheck = {
-  // ZA Maid's base is Duncan Court, Hatfield (confirmed Oct 2026). TO CONFIRM: these are
-  // the middle of Hatfield, about 1 km out; replace with Duncan Court's map pin.
-  base: { lat: -25.7487, lon: 28.238 },
+  // ZA Maid's base: Duncan Court, 1226 Park Street, Hatfield (confirmed Oct 2026; map point
+  // from OpenStreetMap).
+  base: { lat: -25.7483, lon: 28.2416 },
   baseName: "Duncan Court",
   // Straight-line distance × this ≈ distance by road (roads are rarely straight).
   roadFactor: 1.3,
@@ -236,10 +236,15 @@ export const discountCheck = {
   publishableKey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? "sb_publishable_Xr63gZIZfqb9TVtomJVyQA_2drxFNIF",
 };
 
-// About page team grid. photo keys map to the headshots imported in app/about/page.tsx.
-// TO CONFIRM: team members' names and roles, and that each agrees to be shown online.
-export const team: { name: string; role: string; photo?: "zinhle" | "member1" | "member2" }[] = [
+// About page team grid ("more people will be added as time goes"). To add someone, add a line
+// here. Members without a photo show their initials. To add a photo, crop it with
+// scripts/headshot.py, import it in app/about/page.tsx and give it a key in `photos` there.
+// TO CONFIRM: each person's role, and that each agrees to be shown online.
+export type TeamPhoto = "zinhle" | "member1" | "member2";
+export const team: { name: string; role: string; photo?: TeamPhoto }[] = [
   { name: business.founder, role: "Founder", photo: "zinhle" },
-  { name: "Team member", role: "Cleaner", photo: "member1" },
-  { name: "Team member", role: "Cleaner", photo: "member2" },
+  { name: "Precious Musuamba Mujanay", role: "Cleaner" },
+  { name: "Amukelani Shabangu", role: "Cleaner" },
+  { name: "Zoleka Kene", role: "Cleaner" },
+  { name: "Amahle Mbali Zibane", role: "Cleaner" },
 ];

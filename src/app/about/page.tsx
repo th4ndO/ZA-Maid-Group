@@ -1,13 +1,19 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { CtaSection, PageHead, Placeholder } from "@/components/bits";
+import { CtaSection, PageHead } from "@/components/bits";
 import member1 from "@/assets/team-member-1.jpg";
 import member2 from "@/assets/team-member-2.jpg";
 import zinhle from "@/assets/team-zinhle-mdluli.jpg";
-import { business, founderStory, highlights, team } from "@/content/site";
+import { business, founderStory, highlights, team, type TeamPhoto } from "@/content/site";
 
 // Headshots are square, cropped with scripts/headshot.py so faces line up.
-const photos = { zinhle, member1, member2 };
+// member1 / member2 are cropped and ready; they get a name once we know who is who.
+const photos: Record<TeamPhoto, typeof zinhle> = { zinhle, member1, member2 };
+
+const initials = (name: string) => {
+  const parts = name.trim().split(/\s+/);
+  return (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase();
+};
 
 export const metadata: Metadata = {
   title: "About us",
@@ -50,16 +56,16 @@ export default function AboutPage() {
             <h2>The people in your space</h2>
           </div>
           <ul className="team">
-            {team.map((m, i) => {
+            {team.map((m) => {
               const photo = m.photo ? photos[m.photo] : undefined;
               return (
-                <li key={`${m.name}-${i}`}>
+                <li key={m.name}>
                   {photo ? (
-                    <Image src={photo} alt={`${m.name}, ${m.role}`} sizes="(min-width: 640px) 220px, 42vw" placeholder="blur" />
+                    <Image src={photo} alt={`${m.name}, ${m.role}`} sizes="(min-width: 640px) 180px, 30vw" placeholder="blur" />
                   ) : (
-                    <Placeholder photo title="headshot">
-                      Shoulders up, plain wall
-                    </Placeholder>
+                    <span className="team__initials" aria-hidden="true">
+                      {initials(m.name)}
+                    </span>
                   )}
                   <strong>{m.name}</strong>
                   <span>{m.role}</span>
