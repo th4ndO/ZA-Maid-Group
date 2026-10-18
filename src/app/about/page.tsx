@@ -1,15 +1,14 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { CtaSection, PageHead } from "@/components/bits";
-import member1 from "@/assets/team-member-1.jpg";
-import member2 from "@/assets/team-member-2.jpg";
-import member3 from "@/assets/team-member-3.jpg";
+import amahle from "@/assets/team-amahle-mbali-zibane.jpg";
+import precious from "@/assets/team-precious-musuamba-mujanay.jpg";
+import zoleka from "@/assets/team-zoleka-kene.jpg";
 import zinhle from "@/assets/team-zinhle-mdluli.jpg";
 import { business, founderStory, highlights, team, type TeamPhoto } from "@/content/site";
 
 // Headshots are square, cropped with scripts/headshot.py so faces line up.
-// member1-3 are cropped and ready; they get a name once we know who is who.
-const photos: Record<TeamPhoto, typeof zinhle> = { zinhle, member1, member2, member3 };
+const photos: Record<TeamPhoto, typeof zinhle> = { zinhle, precious, amahle, zoleka };
 
 const initials = (name: string) => {
   const parts = name.trim().split(/\s+/);
