@@ -65,7 +65,9 @@ Zinhle's answers are in (hours Mon–Sat 08:00–18:00, anywhere in Pretoria, pr
 - [x] **Founder story**: approved by Zinhle. **Trained staff**: confirmed.
 - [x] **Monthly plans**: callout fee on every visit (2 or 4 a month), counted in the estimate.
 - [x] **Domain**: `zamaidgroup.co.za` (Hostinger), A `@` → 216.198.79.1, CNAME `www` → Vercel.
-      - [x] Zinhle pays the yearly renewal. - [ ] Registrant contact should be ZA Maid Group / Zinhle.
+      - [x] Zinhle pays the yearly renewal. Managed in Profound Productions' Hostinger account.
+      - [ ] Registrant (legal owner) set to ZA Maid Group / Zinhle in Hostinger → Domains →
+            zamaidgroup.co.za → Contacts. Needs her full name, email and address.
 - [x] **Google booking page**: connected (`https://calendar.app.google/va6cm26uCpFS9umz6`). It opens
       in a new tab from step 3. For the calendar to show *inside* the page, use the full link from
       Google Calendar → the schedule → Share → **Website embed** (a `calendar.google.com/…` URL).
