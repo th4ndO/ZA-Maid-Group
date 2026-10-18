@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { AutoCarousel } from "@/components/AutoCarousel";
-import { CtaSection, OfferBadge, OfferPill, Placeholder, PriceCard } from "@/components/bits";
+import { CtaSection, OfferBadge, OfferPill, PriceCard } from "@/components/bits";
 import { HeroRings } from "@/components/HeroRings";
 import { ArrowIcon, CheckIcon, WhatsAppIcon } from "@/components/icons";
 import { business, highlights, monthlyPlans, priceGroups, rand, services, whatsappLink } from "@/content/site";
@@ -135,8 +135,8 @@ export default function Home() {
       </section>
 
       <section className="section section--navy">
-        <div className="wrap split">
-          <div>
+        <div className="wrap">
+          <div className="section-head">
             <p className="label">Cleaner homes, brighter futures</p>
             <h2>Every booking creates work for students</h2>
             <p className="lede">
@@ -146,11 +146,6 @@ export default function Home() {
             <Link className="btn btn--ghost" href="/about">
               Our story
             </Link>
-          </div>
-          <div className="hide-mobile">
-            <Placeholder photo title="team photo">
-              Real people, real spaces, in bright natural light (Brand Guide §07).
-            </Placeholder>
           </div>
         </div>
       </section>
