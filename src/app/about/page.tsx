@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { CtaSection, PageHead, Placeholder } from "@/components/bits";
+import member1 from "@/assets/team-member-1.jpg";
+import member2 from "@/assets/team-member-2.jpg";
 import zinhle from "@/assets/team-zinhle-mdluli.jpg";
 import { business, founderStory, highlights, team } from "@/content/site";
 
 // Headshots are square, cropped with scripts/headshot.py so faces line up.
-const photos = { zinhle };
+const photos = { zinhle, member1, member2 };
 
 export const metadata: Metadata = {
   title: "About us",

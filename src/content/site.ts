@@ -230,8 +230,8 @@ export const discountCheck = {
 
 // About page team grid. photo keys map to the headshots imported in app/about/page.tsx.
 // TO CONFIRM: team members' names and roles, and that each agrees to be shown online.
-export const team: { name: string; role: string; photo?: "zinhle" }[] = [
+export const team: { name: string; role: string; photo?: "zinhle" | "member1" | "member2" }[] = [
   { name: business.founder, role: "Founder", photo: "zinhle" },
-  { name: "Team member", role: "Cleaner" },
-  { name: "Team member", role: "Cleaner" },
+  { name: "Team member", role: "Cleaner", photo: "member1" },
+  { name: "Team member", role: "Cleaner", photo: "member2" },
 ];
