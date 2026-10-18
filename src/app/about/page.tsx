@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { CtaSection, PageHead, Placeholder } from "@/components/bits";
-import { business, founderStory, highlights } from "@/content/site";
+import zinhle from "@/assets/team-zinhle-mdluli.jpg";
+import { business, founderStory, highlights, team } from "@/content/site";
+
+// Headshots are square, cropped with scripts/headshot.py so faces line up.
+const photos = { zinhle };
 
 export const metadata: Metadata = {
   title: "About us",
@@ -19,7 +24,7 @@ export default function AboutPage() {
       />
 
       <section className="section">
-        <div className="wrap split">
+        <div className="wrap prose">
           <div>
             <p className="label">Our story</p>
             <h2>Your space. Our priority.</h2>
@@ -33,11 +38,33 @@ export default function AboutPage() {
               </footer>
             </blockquote>
           </div>
-          <div>
-            <Placeholder photo title={`photo of ${business.founder} or the team`}>
-              Bright, natural light. Real people in a real space.
-            </Placeholder>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="wrap">
+          <div className="section-head">
+            <p className="label">Meet the team</p>
+            <h2>The people in your space</h2>
           </div>
+          <ul className="team">
+            {team.map((m, i) => {
+              const photo = m.photo ? photos[m.photo] : undefined;
+              return (
+                <li key={`${m.name}-${i}`}>
+                  {photo ? (
+                    <Image src={photo} alt={`${m.name}, ${m.role}`} sizes="(min-width: 640px) 220px, 42vw" placeholder="blur" />
+                  ) : (
+                    <Placeholder photo title="headshot">
+                      Shoulders up, plain wall
+                    </Placeholder>
+                  )}
+                  <strong>{m.name}</strong>
+                  <span>{m.role}</span>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </section>
 

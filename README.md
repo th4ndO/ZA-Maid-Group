@@ -48,8 +48,12 @@ npm run build
 Zinhle's answers are in (hours Mon–Sat 08:00–18:00, anywhere in Pretoria, products, cancellation,
 10% first clean, satisfaction, prices confirmed, founder story). Still needed:
 
-- [ ] **Photos**: founder/team photo (About + Home) and real work photos. Dashed "To add" boxes
-      show where they go.
+- [x] **Founder headshot** (About → Meet the team).
+- [ ] **Team headshots**: 2 photos, plus each person's name, role and OK to be shown online. Crop
+      with `python3 scripts/headshot.py IN src/assets/team-NAME.jpg EYE_X EYE_Y FACE_W` so every
+      face matches, then add them to `team` in `src/content/site.ts` and `photos` in
+      `src/app/about/page.tsx`.
+- [ ] **Work photos** (Home): real before/after shots. Dashed "To add" boxes show where they go.
 - [ ] **Social links** → `business.socials` in `src/content/site.ts` (Zinhle sending them).
 - [ ] **Deposit**: the cancellation policy refers to a deposit. How much, when is it paid, how
       (EFT/cash)? Then mention it on the booking page and price list.

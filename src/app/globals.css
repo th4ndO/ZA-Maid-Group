@@ -2533,3 +2533,50 @@ body:has(.booker) .wa-fab {
 .prose li {
   margin-bottom: 10px;
 }
+
+/* Team headshots (About): equal squares so faces line up. */
+.team {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px 16px;
+}
+.team li {
+  flex: 0 0 calc(50% - 8px);
+  text-align: center;
+}
+.team img,
+.team .placeholder {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 0 0 12px;
+  box-shadow: 0 14px 30px -18px rgb(15 35 64 / 0.5);
+}
+.team .placeholder {
+  padding: 12px;
+  font-size: 0.8125rem;
+}
+.team strong {
+  display: block;
+  color: var(--navy);
+}
+.team span {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+@media (min-width: 640px) {
+  .team {
+    justify-content: flex-start;
+    gap: 32px;
+  }
+  .team li {
+    flex-basis: 220px;
+  }
+}

@@ -227,3 +227,11 @@ export const discountCheck = {
   supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://ofbitzqczupdobofuosh.supabase.co",
   publishableKey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? "sb_publishable_Xr63gZIZfqb9TVtomJVyQA_2drxFNIF",
 };
+
+// About page team grid. photo keys map to the headshots imported in app/about/page.tsx.
+// TO CONFIRM: team members' names and roles, and that each agrees to be shown online.
+export const team: { name: string; role: string; photo?: "zinhle" }[] = [
+  { name: business.founder, role: "Founder", photo: "zinhle" },
+  { name: "Team member", role: "Cleaner" },
+  { name: "Team member", role: "Cleaner" },
+];
