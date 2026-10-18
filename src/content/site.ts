@@ -242,7 +242,7 @@ export const discountCheck = {
 // here. Members without a photo show their initials. To add a photo, crop it with
 // scripts/headshot.py, import it in app/about/page.tsx and give it a key in `photos` there.
 // TO CONFIRM: each person's role, and that each agrees to be shown online.
-export type TeamPhoto = "zinhle" | "member1" | "member2";
+export type TeamPhoto = "zinhle" | "member1" | "member2" | "member3";
 export const team: { name: string; role: string; photo?: TeamPhoto }[] = [
   { name: business.founder, role: "Founder", photo: "zinhle" },
   { name: "Precious Musuamba Mujanay", role: "Cleaner" },
