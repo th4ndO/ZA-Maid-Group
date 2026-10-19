@@ -9,8 +9,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/privacy" },
 };
 
-// Plain-language POPIA notice. TO CONFIRM with Zinhle (as Information Officer) before launch,
-// especially how long booking messages are kept.
+// Plain-language POPIA notice. Approved by Zinhle (Information Officer), Oct 2026, including
+// keeping booking messages up to 5 years (tax records).
 export default function PrivacyPage() {
   return (
     <>
@@ -64,8 +64,9 @@ export default function PrivacyPage() {
 
           <h2>How long we keep it</h2>
           <p>
-            We keep booking messages only for as long as we need them to arrange and follow up your clean and to keep
-            proper business records. The scrambled discount record is kept while the first-clean offer runs.
+            We keep booking messages for as long as we need them for your booking and our business records (up to 5
+            years, as the tax rules require), then delete them. The scrambled discount record is kept while the
+            first-clean offer runs.
           </p>
 
           <h2>Your rights</h2>
