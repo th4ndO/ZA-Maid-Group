@@ -243,11 +243,12 @@ export const discountCheck = {
 // scripts/headshot.py, import it in app/about/page.tsx and give it a key in `photos` there.
 // Everyone listed agreed to be shown online (confirmed via Zinhle, Oct 2026). Get the same OK
 // from anyone new before adding them.
-export type TeamPhoto = "zinhle" | "precious" | "amahle" | "zoleka";
+export type TeamPhoto = "zinhle" | "precious" | "amahle" | "zoleka" | "mvuni";
 export const team: { name: string; role: string; photo?: TeamPhoto }[] = [
   { name: business.founder, role: "Founder", photo: "zinhle" },
   { name: "Precious Musuamba Mujanay", role: "Cleaner", photo: "precious" },
   { name: "Amukelani Shabangu", role: "Cleaner" },
   { name: "Zoleka Kene", role: "Cleaner", photo: "zoleka" },
   { name: "Amahle Mbali Zibane", role: "Cleaner", photo: "amahle" },
+  { name: "Mvuni Mdoka", role: "Cleaner", photo: "mvuni" },
 ];

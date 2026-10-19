@@ -2587,9 +2587,9 @@ body:has(.booker) .wa-fab {
 @media (min-width: 640px) {
   .team {
     justify-content: flex-start;
-    gap: 32px;
+    gap: 28px;
   }
   .team li {
-    flex-basis: 180px;
+    flex-basis: 156px;
   }
 }

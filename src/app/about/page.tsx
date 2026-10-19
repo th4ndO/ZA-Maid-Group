@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { CtaSection, PageHead } from "@/components/bits";
 import amahle from "@/assets/team-amahle-mbali-zibane.jpg";
+import mvuni from "@/assets/team-mvuni-mdoka.jpg";
 import precious from "@/assets/team-precious-musuamba-mujanay.jpg";
 import zoleka from "@/assets/team-zoleka-kene.jpg";
 import zinhle from "@/assets/team-zinhle-mdluli.jpg";
 import { business, founderStory, highlights, team, type TeamPhoto } from "@/content/site";
 
 // Headshots are square, cropped with scripts/headshot.py so faces line up.
-const photos: Record<TeamPhoto, typeof zinhle> = { zinhle, precious, amahle, zoleka };
+const photos: Record<TeamPhoto, typeof zinhle> = { zinhle, precious, amahle, zoleka, mvuni };
 
 const initials = (name: string) => {
   const parts = name.trim().split(/\s+/);
@@ -61,7 +62,7 @@ export default function AboutPage() {
               return (
                 <li key={m.name}>
                   {photo ? (
-                    <Image src={photo} alt={`${m.name}, ${m.role}`} sizes="(min-width: 640px) 180px, 30vw" placeholder="blur" />
+                    <Image src={photo} alt={`${m.name}, ${m.role}`} sizes="(min-width: 640px) 156px, 30vw" placeholder="blur" />
                   ) : (
                     <span className="team__initials" aria-hidden="true">
                       {initials(m.name)}
