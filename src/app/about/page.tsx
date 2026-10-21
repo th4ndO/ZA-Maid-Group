@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { CtaSection, PageHead } from "@/components/bits";
 import amahle from "@/assets/team-amahle-mbali-zibane.jpg";
+import amukelani from "@/assets/team-amukelani-shabangu.jpg";
 import mvuni from "@/assets/team-mvuni-mdoka.jpg";
 import precious from "@/assets/team-precious-musuamba-mujanay.jpg";
 import zoleka from "@/assets/team-zoleka-kene.jpg";
@@ -9,7 +10,7 @@ import zinhle from "@/assets/team-zinhle-mdluli.jpg";
 import { business, founderStory, highlights, team, type TeamPhoto } from "@/content/site";
 
 // Headshots are square, cropped with scripts/headshot.py so faces line up.
-const photos: Record<TeamPhoto, typeof zinhle> = { zinhle, precious, amahle, zoleka, mvuni };
+const photos: Record<TeamPhoto, typeof zinhle> = { zinhle, precious, amahle, zoleka, mvuni, amukelani };
 
 const initials = (name: string) => {
   const parts = name.trim().split(/\s+/);
