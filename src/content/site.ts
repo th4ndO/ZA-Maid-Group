@@ -267,14 +267,14 @@ export const beforeAfter: { photo: WorkPhoto; title: string; before: string; aft
   {
     photo: "sink",
     title: "Sink",
-    before: "Kitchen sink full of soapy water with bottles and gloves around it",
-    after: "The same sink, empty and shining",
+    before: "Kitchen sink full of soapy water, with gloves, bottles and a chopping board around it",
+    after: "The same sink, empty and shining, with a clear counter",
   },
   {
     photo: "desk",
-    title: "Desk corner",
-    before: "Desk covered in clutter with socks on the chair",
-    after: "The same desk, cleared and tidy",
+    title: "Desk",
+    before: "Cluttered desk with socks on the chair",
+    after: "The same desk, cleared and neatly arranged",
   },
 ];
 
