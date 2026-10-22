@@ -6,8 +6,8 @@ import { HeroRings } from "@/components/HeroRings";
 import { ArrowIcon, CheckIcon, WhatsAppIcon } from "@/components/icons";
 import deskAfter from "@/assets/work/desk-after.jpg";
 import deskBefore from "@/assets/work/desk-before.jpg";
-import kitchenAfter from "@/assets/work/kitchen-after.jpg";
-import kitchenBefore from "@/assets/work/kitchen-before.jpg";
+import rugAfter from "@/assets/work/rug-after.jpg";
+import rugBefore from "@/assets/work/rug-before.jpg";
 import sinkAfter from "@/assets/work/sink-after.jpg";
 import sinkBefore from "@/assets/work/sink-before.jpg";
 import {
@@ -23,7 +23,7 @@ import {
 } from "@/content/site";
 
 const work: Record<WorkPhoto, { before: typeof deskAfter; after: typeof deskAfter }> = {
-  kitchen: { before: kitchenBefore, after: kitchenAfter },
+  rug: { before: rugBefore, after: rugAfter },
   sink: { before: sinkBefore, after: sinkAfter },
   desk: { before: deskBefore, after: deskAfter },
 };

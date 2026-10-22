@@ -256,13 +256,13 @@ export const team: { name: string; role: string; photo?: TeamPhoto }[] = [
 // Home page before & after (real cleans, sent by Zinhle Oct 2026). Photos are in
 // src/assets/work and mapped by key in app/page.tsx. Personal photos in shot are blurred;
 // check with the customer before adding new ones.
-export type WorkPhoto = "kitchen" | "sink" | "desk";
+export type WorkPhoto = "rug" | "sink" | "desk";
 export const beforeAfter: { photo: WorkPhoto; title: string; before: string; after: string }[] = [
   {
-    photo: "kitchen",
-    title: "Kitchen counter",
-    before: "Kitchen counter covered in dishes, pots and cutlery",
-    after: "The same kitchen counter, cleared and wiped down",
+    photo: "rug",
+    title: "Rug",
+    before: "Grubby rug with an ink stain, one corner already cleaned to show the difference",
+    after: "The same rug, cleaned all over",
   },
   {
     photo: "sink",
