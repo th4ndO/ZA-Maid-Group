@@ -252,3 +252,28 @@ export const team: { name: string; role: string; photo?: TeamPhoto }[] = [
   { name: "Amahle Mbali Zibane", role: "Cleaner", photo: "amahle" },
   { name: "Mvuni Mdoka", role: "Cleaner", photo: "mvuni" },
 ];
+
+// Home page before & after (real cleans, sent by Zinhle Oct 2026). Photos are in
+// src/assets/work and mapped by key in app/page.tsx. Personal photos in shot are blurred;
+// check with the customer before adding new ones.
+export type WorkPhoto = "kitchen" | "sink" | "desk";
+export const beforeAfter: { photo: WorkPhoto; title: string; before: string; after: string }[] = [
+  {
+    photo: "kitchen",
+    title: "Kitchen counter",
+    before: "Kitchen counter covered in dishes, pots and cutlery",
+    after: "The same kitchen counter, cleared and wiped down",
+  },
+  {
+    photo: "sink",
+    title: "Sink",
+    before: "Kitchen sink full of soapy water with bottles and gloves around it",
+    after: "The same sink, empty and shining",
+  },
+  {
+    photo: "desk",
+    title: "Desk corner",
+    before: "Desk covered in clutter with socks on the chair",
+    after: "The same desk, cleared and tidy",
+  },
+];

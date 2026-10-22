@@ -2593,3 +2593,55 @@ body:has(.booker) .wa-fab {
     flex-basis: 156px;
   }
 }
+
+/* Before & after (home). Each card shows both photos at once, so nothing needs tapping. */
+.ba {
+  margin: 0;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 8px;
+}
+.ba__pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.ba__img {
+  position: relative;
+  border-radius: 9px;
+  overflow: hidden;
+}
+.ba__img img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+.ba__tag {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  padding: 5px 9px;
+  border-radius: var(--radius-pill);
+  background: rgb(15 35 64 / 0.8);
+  color: var(--white);
+  font: 700 0.6875rem / 1 var(--font-sans), sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ba__tag--after {
+  background: var(--royal);
+}
+.ba figcaption {
+  padding: 10px 4px 4px;
+  font-weight: 600;
+  color: var(--navy);
+}
+@media (max-width: 639px) {
+  .carousel.ba-row > * {
+    flex-basis: 88%;
+  }
+}

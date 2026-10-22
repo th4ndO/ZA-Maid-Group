@@ -1,9 +1,32 @@
+import Image from "next/image";
 import Link from "next/link";
 import { AutoCarousel } from "@/components/AutoCarousel";
 import { CtaSection, OfferBadge, OfferPill, PriceCard } from "@/components/bits";
 import { HeroRings } from "@/components/HeroRings";
 import { ArrowIcon, CheckIcon, WhatsAppIcon } from "@/components/icons";
-import { business, highlights, monthlyPlans, priceGroups, rand, services, whatsappLink } from "@/content/site";
+import deskAfter from "@/assets/work/desk-after.jpg";
+import deskBefore from "@/assets/work/desk-before.jpg";
+import kitchenAfter from "@/assets/work/kitchen-after.jpg";
+import kitchenBefore from "@/assets/work/kitchen-before.jpg";
+import sinkAfter from "@/assets/work/sink-after.jpg";
+import sinkBefore from "@/assets/work/sink-before.jpg";
+import {
+  beforeAfter,
+  business,
+  highlights,
+  monthlyPlans,
+  priceGroups,
+  rand,
+  services,
+  whatsappLink,
+  type WorkPhoto,
+} from "@/content/site";
+
+const work: Record<WorkPhoto, { before: typeof deskAfter; after: typeof deskAfter }> = {
+  kitchen: { before: kitchenBefore, after: kitchenAfter },
+  sink: { before: sinkBefore, after: sinkAfter },
+  desk: { before: deskBefore, after: deskAfter },
+};
 
 // Mobile-first: each section has one job and one thing that stands out.
 export default function Home() {
@@ -73,6 +96,33 @@ export default function Home() {
                 <h3>{s.title}</h3>
                 <p>{s.body}</p>
               </article>
+            ))}
+          </AutoCarousel>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="wrap">
+          <div className="section-head">
+            <p className="label">Before &amp; after</p>
+            <h2>See the difference</h2>
+            <p className="lede">Real cleans by the ZA Maid team.</p>
+          </div>
+          <AutoCarousel className="grid grid--3 ba-row" label="Before and after photos">
+            {beforeAfter.map((p) => (
+              <figure key={p.photo} className="ba">
+                <div className="ba__pair">
+                  <div className="ba__img">
+                    <Image src={work[p.photo].before} alt={`Before: ${p.before}`} sizes="(min-width: 640px) 180px, 42vw" placeholder="blur" />
+                    <span className="ba__tag">Before</span>
+                  </div>
+                  <div className="ba__img">
+                    <Image src={work[p.photo].after} alt={`After: ${p.after}`} sizes="(min-width: 640px) 180px, 42vw" placeholder="blur" />
+                    <span className="ba__tag ba__tag--after">After</span>
+                  </div>
+                </div>
+                <figcaption>{p.title}</figcaption>
+              </figure>
             ))}
           </AutoCarousel>
         </div>
