@@ -5,7 +5,7 @@ import { CtaSection, PageHead, Placeholder } from "@/components/bits";
 import { business, calloutFees, firstCleanOffer, monthlyPlanNote, policies, rand } from "@/content/site";
 
 export const metadata: Metadata = {
-  title: "FAQ & areas we cover",
+  title: "Cleaning FAQ & areas we cover in Pretoria",
   description:
     "ZA Maid Group cleans anywhere in Pretoria. Callout fees, products, cancellations, payment and booking explained. Based in Hatfield.",
   alternates: { canonical: "/faq" },
@@ -19,8 +19,9 @@ const faqs: { q: string; a: ReactNode }[] = [
     a: (
       <>
         <p>
-          Anywhere in {business.city}. We&apos;re based in {business.suburb} and come to you for a callout fee based
-          on distance. See the <Link href="/services#callout-fee">callout fees</Link>. We&apos;re growing, and look
+          Anywhere in {business.city}, including Hatfield, Arcadia, Sunnyside, Brooklyn, Hillcrest, Menlo Park,
+          Lynnwood, Waterkloof, the CBD and Centurion. We&apos;re based in {business.suburb} and come to you for a
+          callout fee based on distance. See the <Link href="/services#callout-fee">callout fees</Link>. We&apos;re growing, and look
           forward to serving more of the country soon.
         </p>
       </>

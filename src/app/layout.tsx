@@ -39,43 +39,83 @@ export const metadata: Metadata = {
     title: "ZA Maid Group | Your space. Our priority.",
     description,
   },
+  alternates: { canonical: "/" },
   formatDetection: { telephone: true },
+  // Google Search Console's "HTML tag" check, if used instead of the DNS record. Set
+  // NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION in Vercel to the code from the tag's content="…".
+  ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION } }
+    : {}),
 };
 
 export const viewport: Viewport = {
   themeColor: "#0F2340",
 };
 
-function localBusinessJsonLd() {
+// What Google reads about the business (structured data). The street address is left out on
+// purpose: Duncan Court is a home, and ZA Maid goes to customers, so it's a service-area business.
+function jsonLd() {
+  const base = siteUrl();
+  const url = base.toString();
   const prices = priceGroups.flatMap((g) => g.items.map((i) => i.price));
-  return {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    name: business.name,
-    slogan: business.tagline,
-    url: siteUrl().toString(),
-    telephone: business.phoneIntl,
-    email: business.email,
-    priceRange: `R${Math.min(...prices)}–R${Math.max(...prices)}`,
-    paymentAccepted: "Cash, EFT",
-    currenciesAccepted: "ZAR",
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: `${business.suburb}, ${business.city}`,
-      addressRegion: business.province,
-      addressCountry: "ZA",
+  return [
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "@id": `${url}#business`,
+      name: business.name,
+      slogan: business.tagline,
+      description,
+      url,
+      logo: new URL("/icon.png", base).toString(),
+      image: new URL("/opengraph-image.png", base).toString(),
+      telephone: business.phoneIntl,
+      email: business.email,
+      priceRange: `R${Math.min(...prices)}–R${Math.max(...prices)}`,
+      paymentAccepted: "Cash, EFT",
+      currenciesAccepted: "ZAR",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: business.suburb,
+        addressRegion: business.province,
+        postalCode: "0083",
+        addressCountry: "ZA",
+      },
+      areaServed: { "@type": "City", name: business.city },
+      founder: { "@type": "Person", name: business.founder },
+      foundingDate: "2026",
+      sameAs: business.socials.map((s) => s.href),
+      openingHoursSpecification: {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        opens: "08:00",
+        closes: "18:00",
+      },
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "Cleaning services",
+        itemListElement: priceGroups.map((g) => ({
+          "@type": "OfferCatalog",
+          name: g.title,
+          itemListElement: g.items.map((i) => ({
+            "@type": "Offer",
+            itemOffered: { "@type": "Service", name: i.name },
+            price: i.price,
+            priceCurrency: "ZAR",
+          })),
+        })),
+      },
     },
-    areaServed: { "@type": "City", name: business.city },
-    founder: { "@type": "Person", name: business.founder },
-    foundingDate: "2026",
-    sameAs: business.socials.map((s) => s.href),
-    openingHoursSpecification: {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-      opens: "08:00",
-      closes: "18:00",
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": `${url}#website`,
+      name: business.name,
+      url,
+      inLanguage: "en-ZA",
+      publisher: { "@id": `${url}#business` },
     },
-  };
+  ];
 }
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -92,7 +132,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script
           type="application/ld+json"
           // JSON-LD is built from our own constants; escape "<" so it can't close the tag.
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd()).replace(/</g, "\\u003c") }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd()).replace(/</g, "\\u003c") }}
         />
       </body>
     </html>

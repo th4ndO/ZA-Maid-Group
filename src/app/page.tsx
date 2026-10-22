@@ -40,12 +40,12 @@ export default function Home() {
         <div className="wrap hero__grid">
           <div>
             <p className="label">
-              {business.suburb} · {business.city}
+              Cleaning services · {business.suburb}, {business.city}
             </p>
             <h1>
               Your space. <span className="accent">Our priority.</span>
             </h1>
-            <p className="lede">Cleaning for homes, apartments and offices. Real prices, no surprises.</p>
+            <p className="lede">Cleaning for homes, apartments and offices anywhere in {business.city}. Real prices, no surprises.</p>
             <OfferPill />
             <ul className="chips" aria-label="Our services">
               {services.map((s) => (

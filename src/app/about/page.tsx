@@ -18,7 +18,7 @@ const initials = (name: string) => {
 };
 
 export const metadata: Metadata = {
-  title: "About us",
+  title: "About us: Hatfield cleaners",
   description:
     "ZA Maid Group was started in 2026 in Hatfield by Zinhle Mdluli. We clean homes, apartments and offices anywhere in Pretoria, and give students same-day paid work.",
   alternates: { canonical: "/about" },

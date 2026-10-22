@@ -6,7 +6,7 @@ import { MapFacade } from "@/components/MapFacade";
 import { business, whatsappLink } from "@/content/site";
 
 export const metadata: Metadata = {
-  title: "Book a clean",
+  title: "Book a cleaner in Pretoria",
   description:
     "Book a clean with ZA Maid Group online: choose your services, see the price, pick a day. Or WhatsApp 071 510 4638. Hatfield, Pretoria.",
   alternates: { canonical: "/contact" },

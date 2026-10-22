@@ -25,7 +25,7 @@ const finishedPhotos: Record<FinishedPhoto, typeof finishedKitchen> = {
 };
 
 export const metadata: Metadata = {
-  title: "Services & prices",
+  title: "Cleaning services & prices in Pretoria",
   description:
     "ZA Maid Group price list: home cleans from R200, couches, mattresses, carpets, move-in/out cleans and monthly deep-clean plans. Hatfield, Pretoria.",
   alternates: { canonical: "/services" },
