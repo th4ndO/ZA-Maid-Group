@@ -1,16 +1,28 @@
-import { AutoCarousel } from "@/components/AutoCarousel";
 import type { Metadata } from "next";
+import Image from "next/image";
+import finishedBathroom from "@/assets/work/finished-bathroom.jpg";
+import finishedKitchen from "@/assets/work/finished-kitchen.jpg";
+import finishedShower from "@/assets/work/finished-shower.jpg";
+import { AutoCarousel } from "@/components/AutoCarousel";
 import { CtaSection, PageHead, PriceCard } from "@/components/bits";
 import {
   business,
   calloutFees,
   calloutNote,
+  finishedClean,
   monthlyPlanNote,
   monthlyPlans,
   priceGroups,
   rand,
   services,
+  type FinishedPhoto,
 } from "@/content/site";
+
+const finishedPhotos: Record<FinishedPhoto, typeof finishedKitchen> = {
+  kitchen: finishedKitchen,
+  bathroom: finishedBathroom,
+  shower: finishedShower,
+};
 
 export const metadata: Metadata = {
   title: "Services & prices",
@@ -42,6 +54,26 @@ export default function ServicesPage() {
                 <h3>{s.title}</h3>
                 <p>{s.body}</p>
               </article>
+            ))}
+          </AutoCarousel>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="wrap">
+          <div className="section-head">
+            <p className="label">Recent work</p>
+            <h2>Spotless, down to the details</h2>
+            <p className="lede">A recent full clean, finished with the ZA Maid checklist.</p>
+          </div>
+          <AutoCarousel className="grid grid--3 ba-row" label="Photos of a finished clean">
+            {finishedClean.map((f) => (
+              <figure key={f.photo} className="ba">
+                <div className="ba__img">
+                  <Image src={finishedPhotos[f.photo]} alt={f.alt} sizes="(min-width: 640px) 360px, 88vw" placeholder="blur" />
+                </div>
+                <figcaption>{f.title}</figcaption>
+              </figure>
             ))}
           </AutoCarousel>
         </div>

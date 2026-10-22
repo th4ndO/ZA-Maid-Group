@@ -54,6 +54,7 @@ Zinhle's answers are in (hours Mon–Sat 08:00–18:00, anywhere in Pretoria, pr
       face matches, then add them to `team` in `src/content/site.ts` and `photos` in
       `src/app/about/page.tsx`.
 - [x] **Work photos** (Home → Before & after): kitchen counter, sink, desk. Family photo in shot blurred.
+- [x] **Recent work** (Services): kitchen, bathroom, shower from one finished clean ("after" only, so not shown as before & after).
 - [x] **Social links**: Instagram @za_maidgroup, TikTok @za.maid (footer + Google structured data).
 - [x] **Deposit**: 50% by EFT, on all bookings including monthly plans (booker, WhatsApp message,
       FAQ). Banking details are sent by ZA Maid when confirming, not shown on the site.

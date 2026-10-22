@@ -277,3 +277,12 @@ export const beforeAfter: { photo: WorkPhoto; title: string; before: string; aft
     after: "The same desk, cleared and tidy",
   },
 ];
+
+// Services page: photos from one finished full clean (Oct 2026). "After" shots only, so
+// they're shown as a finished clean, not as before & after.
+export type FinishedPhoto = "kitchen" | "bathroom" | "shower";
+export const finishedClean: { photo: FinishedPhoto; title: string; alt: string }[] = [
+  { photo: "kitchen", title: "Kitchen", alt: "Spotless kitchen with the ZA Maid checklist and a thank-you card on the counter" },
+  { photo: "bathroom", title: "Bathroom", alt: "Clean bathroom with a shining basin and toilet" },
+  { photo: "shower", title: "Shower", alt: "Clean shower with clear glass and fresh tiles" },
+];
