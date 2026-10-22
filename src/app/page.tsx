@@ -108,16 +108,16 @@ export default function Home() {
             <h2>See the difference</h2>
             <p className="lede">Real cleans by the ZA Maid team.</p>
           </div>
-          <AutoCarousel className="grid grid--3 ba-row" label="Before and after photos">
+          <AutoCarousel className="grid ba-row ba-row--big" label="Before and after photos">
             {beforeAfter.map((p) => (
               <figure key={p.photo} className="ba">
                 <div className="ba__pair">
                   <div className="ba__img">
-                    <Image src={work[p.photo].before} alt={`Before: ${p.before}`} sizes="(min-width: 640px) 180px, 42vw" placeholder="blur" />
+                    <Image src={work[p.photo].before} alt={`Before: ${p.before}`} sizes="(min-width: 640px) 430px, 46vw" placeholder="blur" />
                     <span className="ba__tag">Before</span>
                   </div>
                   <div className="ba__img">
-                    <Image src={work[p.photo].after} alt={`After: ${p.after}`} sizes="(min-width: 640px) 180px, 42vw" placeholder="blur" />
+                    <Image src={work[p.photo].after} alt={`After: ${p.after}`} sizes="(min-width: 640px) 430px, 46vw" placeholder="blur" />
                     <span className="ba__tag ba__tag--after">After</span>
                   </div>
                 </div>

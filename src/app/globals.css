@@ -2645,3 +2645,32 @@ body:has(.booker) .wa-fab {
     flex-basis: 88%;
   }
 }
+
+/* Home before & after: big, one pair per row on desktop so the difference is easy to see. */
+@media (max-width: 639px) {
+  .carousel.ba-row--big > * {
+    flex-basis: 100%;
+  }
+}
+@media (min-width: 640px) {
+  .grid.ba-row--big {
+    grid-template-columns: 1fr;
+    max-width: 880px;
+    gap: 28px;
+  }
+  .ba-row--big .ba {
+    padding: 12px;
+  }
+  .ba-row--big .ba__pair {
+    gap: 12px;
+  }
+  .ba-row--big .ba__tag {
+    left: 12px;
+    top: 12px;
+    font-size: 0.8125rem;
+    padding: 7px 12px;
+  }
+  .ba-row--big figcaption {
+    font-size: 1.125rem;
+  }
+}
