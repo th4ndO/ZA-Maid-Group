@@ -113,11 +113,11 @@ export default function Home() {
               <figure key={p.photo} className="ba">
                 <div className="ba__pair">
                   <div className="ba__img">
-                    <Image src={work[p.photo].before} alt={`Before: ${p.before}`} sizes="(min-width: 640px) 430px, 46vw" placeholder="blur" />
+                    <Image src={work[p.photo].before} alt={`Before: ${p.before}`} sizes="(min-width: 640px) 270px, 46vw" placeholder="blur" />
                     <span className="ba__tag">Before</span>
                   </div>
                   <div className="ba__img">
-                    <Image src={work[p.photo].after} alt={`After: ${p.after}`} sizes="(min-width: 640px) 430px, 46vw" placeholder="blur" />
+                    <Image src={work[p.photo].after} alt={`After: ${p.after}`} sizes="(min-width: 640px) 270px, 46vw" placeholder="blur" />
                     <span className="ba__tag ba__tag--after">After</span>
                   </div>
                 </div>
