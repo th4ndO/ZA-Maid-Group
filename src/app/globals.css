@@ -2786,3 +2786,32 @@ body:has(.booker) .wa-fab {
   color: var(--navy);
   line-height: 1.2;
 }
+
+/* Booker step 3: booked on Google = done; sending the list is optional. */
+.booked-done {
+  margin: 14px 0 6px;
+  padding: 16px 18px;
+  border: 1.5px solid #2f8a57;
+  border-radius: 12px;
+  background: #eef8f2;
+  color: var(--ink);
+  animation: rise 0.3s ease;
+}
+.booked-done p {
+  margin: 0 0 10px;
+}
+.booked-done__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 1.0625rem;
+  color: #1f6b41;
+}
+.booked-done__title svg {
+  width: 20px;
+  height: 20px;
+}
+.booked-done .btn {
+  margin-top: 4px;
+}

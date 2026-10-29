@@ -149,6 +149,8 @@ export function Booker() {
   const { earliest, latest, stepMinutes } = booking.customTime;
   const customTimeOk = timeAllowed(customTime, earliest, latest, stepMinutes);
   const isCustom = (google && whenMode === "custom") || (!google && time === "exact");
+  // Booked a slot on Google: that's the booking. Sending the list afterwards is optional.
+  const slotsBooked = !!google && whenMode === "slots" && booked;
 
   const stepValid = [
     chosen.length > 0,
@@ -156,7 +158,7 @@ export function Booker() {
     isCustom
       ? date !== null && customTimeOk
       : google
-        ? booked && bookedWhen.trim().length >= 4
+        ? booked
         : date !== null && time !== null,
     name.trim().length > 1 && mobile !== null,
   ];
@@ -246,7 +248,7 @@ export function Booker() {
       isCustom
         ? `Requested time: ${date ? longDate(date) : "-"} at ${customTime} (custom time, please confirm)`
         : google
-          ? `Time: booked on your calendar for ${bookedWhen.trim()}`
+          ? `Time: booked on your calendar${bookedWhen.trim() ? ` for ${bookedWhen.trim()}` : ""}`
           : `Date: ${date ? longDate(date) : "-"}${timeLabel ? `, ${timeLabel.label.toLowerCase()}` : ""}`,
       place
         ? `Where: ${[unit.trim(), place.label].filter(Boolean).join(", ")} (verified address, about ${roadKmFromBase(place).toFixed(1)} km by road)`
@@ -590,8 +592,8 @@ export function Booker() {
               {embeddable ? (
                 <>
                   <p className="booker__hint">
-                    These are our real open slots. Choose one and add your details, then come back here to send us
-                    your list.
+                    These are our real open slots. Choose one and add your details: that books it, and we&apos;re told
+                    straight away.
                   </p>
                   <div className="gcal">
                     <iframe src={google} title="ZA Maid Group booking calendar" loading="lazy" />
@@ -608,8 +610,8 @@ export function Booker() {
                 <div className="gcal-link">
                   <CalendarIcon />
                   <p>
-                    Our calendar shows only the times we&apos;re free. Pick one, add your details, then come back to
-                    this tab to send us your list.
+                    Our calendar shows only the times we&apos;re free. Pick one and add your details: that books it,
+                    and we&apos;re told straight away. Then come back to this tab.
                   </p>
                   <a className="btn btn--primary" href={google} target="_blank" rel="noopener">
                     Choose a time on our calendar
@@ -621,18 +623,20 @@ export function Booker() {
                 <span>I&apos;ve booked my time</span>
               </label>
               {booked && (
-                <div className="field booked-when">
-                  <label htmlFor="b-booked-when">
-                    Which day and time did you book? <span className="req" aria-hidden>*</span>
-                  </label>
-                  <input
-                    id="b-booked-when"
-                    value={bookedWhen}
-                    onChange={(e) => setBookedWhen(e.target.value)}
-                    placeholder="e.g. Tuesday 21 October, 09:00"
-                    required
-                    aria-required="true"
-                  />
+                <div className="booked-done" role="status">
+                  <p className="booked-done__title">
+                    <CheckIcon /> You&apos;re booked!
+                  </p>
+                  <p>
+                    Google has emailed you a confirmation and we&apos;ve been notified. We&apos;ll message you to confirm
+                    the price and the deposit. Nothing else is needed.
+                  </p>
+                  <p>
+                    <strong>Optional:</strong> send us your list now so we bring the right things.
+                  </p>
+                  <button type="button" className="btn btn--ghost" onClick={next}>
+                    Send my list (optional)
+                  </button>
                 </div>
               )}
               <p className="booker__hint booker__hint--after">
@@ -647,7 +651,7 @@ export function Booker() {
                 <p className="booker__error">
                   {whenMode === "custom"
                     ? `Pick a day and a start time between ${earliest} and ${latest}.`
-                    : "Book a time on the calendar, tick the box and tell us the day and time you booked."}
+                    : "Book a time on the calendar, then tick \"I've booked my time\"."}
                 </p>
               )}
             </section>
@@ -688,7 +692,25 @@ export function Booker() {
 
           {step === 3 && (
             <section aria-labelledby="b-you">
-              <h2 id="b-you">Almost done</h2>
+              <h2 id="b-you">{slotsBooked ? "Send us your list (optional)" : "Almost done"}</h2>
+              {slotsBooked && (
+                <>
+                  <p className="booker__hint">
+                    You&apos;re already booked. Sending this just tells us what to bring, so we can confirm your price.
+                  </p>
+                  <div className="field">
+                    <label htmlFor="b-booked-when">
+                      Which day and time did you book? <span className="hint">(optional)</span>
+                    </label>
+                    <input
+                      id="b-booked-when"
+                      value={bookedWhen}
+                      onChange={(e) => setBookedWhen(e.target.value)}
+                      placeholder="e.g. Tuesday 3 November, 09:00"
+                    />
+                  </div>
+                </>
+              )}
               <div className="field">
                 <label htmlFor="b-name">
                   Your name <span className="req" aria-hidden>*</span>
@@ -917,7 +939,7 @@ export function Booker() {
               Back
             </button>
           )}
-          {step < STEPS.length - 1 && (
+          {step < STEPS.length - 1 && !(step === 2 && slotsBooked) && (
             <button type="button" className="btn btn--primary" onClick={next}>
               Next: {STEPS[step + 1]}
             </button>
