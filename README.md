@@ -76,6 +76,10 @@ Zinhle's answers are in (hours Mon–Sat 08:00–18:00, anywhere in Pretoria, pr
 
 ## Online booking
 
+Step 4 lets customers pick a preferred cleaner (photos from the team list). It's a request: the
+WhatsApp message says "Preferred cleaner: … (if available, please confirm)". Turn it off with
+`booking.chooseCleaner` in `src/content/site.ts`.
+
 `/contact` has a 4-step booker (services → address → time → details) that sends the booking to
 ZA Maid on WhatsApp or email. The booking isn't stored; see "Address check and first-clean
 discount" for the one thing that is.

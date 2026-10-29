@@ -2679,3 +2679,73 @@ body:has(.booker) .wa-fab {
     font-size: 1.125rem;
   }
 }
+
+/* Booker step 4: choose your cleaner (radio tiles with headshots). */
+.cleaners {
+  border: 0;
+  padding: 0;
+  margin: 0 0 18px;
+  min-width: 0;
+}
+.cleaners legend {
+  padding: 0;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--navy);
+}
+.cleaners legend .hint {
+  font-weight: 400;
+  color: var(--muted);
+}
+.cleaners__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 8px;
+}
+.cleaners__opt {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 10px 4px 8px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--white);
+  cursor: pointer;
+  text-align: center;
+}
+.cleaners__opt[data-selected="true"] {
+  border-color: var(--royal);
+  background: #f3f7fc;
+  box-shadow: 0 0 0 1px var(--royal);
+}
+.cleaners__opt input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.cleaners__opt:has(input:focus-visible) {
+  outline: 3px solid var(--royal);
+  outline-offset: 2px;
+}
+.cleaners__img {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.cleaners__img--any {
+  display: grid;
+  place-items: center;
+  background: var(--mist);
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 0.8125rem;
+}
+.cleaners__name {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--navy);
+  line-height: 1.2;
+}

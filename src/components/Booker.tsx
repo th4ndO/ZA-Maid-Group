@@ -12,9 +12,12 @@ import {
   policies,
   priceGroups,
   rand,
+  team,
   whatsappLink,
 } from "@/content/site";
 import { calloutIndexFor, mapsLink, reverseLookup, roadKmFromBase, searchAddress, type Place } from "@/lib/address";
+import Image from "next/image";
+import { initials, teamPhotos } from "@/content/team-photos";
 import { claimFirstClean, displayMobile, normaliseSaMobile, type ClaimResult } from "@/lib/discount";
 import { CalendarIcon, CheckIcon, MailIcon, PinIcon, WhatsAppIcon } from "./icons";
 
@@ -113,6 +116,7 @@ export function Booker() {
   const embeddable = google?.startsWith("https://calendar.google.com/") ?? false;
   const [name, setName] = useState("");
   const [notes, setNotes] = useState("");
+  const [cleaner, setCleaner] = useState(""); // a team member's name, or "" for no preference
   const [firstClean, setFirstClean] = useState(false);
   const [phone, setPhone] = useState("");
   const [claim, setClaim] = useState<ClaimResult | null>(null);
@@ -267,6 +271,7 @@ export function Booker() {
       `Name: ${name.trim()}`,
       `Phone: ${mobile ? displayMobile(mobile) : phone.trim()}`,
     );
+    if (cleaner) lines.push(`Preferred cleaner: ${cleaner} (if available, please confirm)`);
     if (notes.trim()) lines.push(`Notes: ${notes.trim()}`);
     return lines.join("\n");
   }
@@ -726,6 +731,42 @@ export function Booker() {
               <p className="form__note form__note--req">
                 <span className="req" aria-hidden>*</span> Required
               </p>
+              {booking.chooseCleaner && (
+                <fieldset className="cleaners">
+                  <legend>
+                    Choose your cleaner <span className="hint">(optional)</span>
+                  </legend>
+                  <div className="cleaners__grid">
+                    {[{ name: "", role: "", photo: undefined }, ...team].map((m) => {
+                      const photo = m.photo ? teamPhotos[m.photo] : undefined;
+                      const label = m.name ? m.name.split(" ")[0] : "No preference";
+                      return (
+                        <label key={m.name || "any"} className="cleaners__opt" data-selected={cleaner === m.name}>
+                          <input
+                            type="radio"
+                            name="cleaner"
+                            value={m.name}
+                            checked={cleaner === m.name}
+                            onChange={() => setCleaner(m.name)}
+                          />
+                          {photo ? (
+                            <Image src={photo} alt="" sizes="56px" className="cleaners__img" />
+                          ) : (
+                            <span className="cleaners__img cleaners__img--any" aria-hidden="true">
+                              {m.name ? initials(m.name) : "Any"}
+                            </span>
+                          )}
+                          <span className="cleaners__name">{label}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                  <p className="form__note">
+                    We&apos;ll do our best to send who you choose. If they&apos;re not free that day, we&apos;ll tell you
+                    before we confirm.
+                  </p>
+                </fieldset>
+              )}
               <div className="field">
                 <label htmlFor="b-notes">
                   Anything we should know? <span className="hint">(optional)</span>
@@ -821,6 +862,7 @@ export function Booker() {
               )}
             </ul>
           )}
+          {cleaner && <p className="booker__when">Cleaner: {cleaner.split(" ")[0]} (requested)</p>}
           {isCustom && date && customTimeOk && (
             <p className="booker__when">
               <CalendarIcon /> {longDate(date)} at {customTime} (requested)

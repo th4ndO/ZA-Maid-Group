@@ -202,6 +202,9 @@ export const booking = {
     process.env.NEXT_PUBLIC_GOOGLE_BOOKING_URL ?? "https://calendar.app.google/va6cm26uCpFS9umz6",
   ),
   daysAhead: 60,
+  // Step 4 lets customers ask for a team member by name (a request ZA Maid confirms, not a
+  // guarantee). Set to false to hide it.
+  chooseCleaner: true,
   closedWeekdays: [0] as number[], // 0 = Sunday … 6 = Saturday (closed Sundays)
   // Custom start times customers may request (24h "HH:MM"). Latest start 17:00, confirmed
   // by Zinhle (Oct 2026).
