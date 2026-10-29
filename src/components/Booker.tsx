@@ -550,20 +550,29 @@ export function Booker() {
           {step === 2 && google && (
             <section aria-labelledby="b-when">
               <h2 id="b-when">Pick your time</h2>
-              <div className="seg" role="group" aria-label="How to choose a time">
+              <p className="seg__prompt" id="b-when-how">How would you like to book? Tap one:</p>
+              <div className="seg" role="group" aria-labelledby="b-when-how">
                 <button
                   type="button"
                   aria-pressed={whenMode === "slots"}
                   onClick={() => setWhenMode("slots")}
                 >
-                  Open slots
+                  <span className="seg__dot" aria-hidden="true" />
+                  <span>
+                    <strong>Open slots</strong>
+                    <small>Pick a free time on our calendar</small>
+                  </span>
                 </button>
                 <button
                   type="button"
                   aria-pressed={whenMode === "custom"}
                   onClick={() => setWhenMode("custom")}
                 >
-                  Custom time
+                  <span className="seg__dot" aria-hidden="true" />
+                  <span>
+                    <strong>Custom time</strong>
+                    <small>Ask for your own day and time</small>
+                  </span>
                 </button>
               </div>
               {whenMode === "custom" ? (
@@ -634,7 +643,7 @@ export function Booker() {
               </p>
               </>
               )}
-              {tried && !stepValid[2] && (
+              {tried && !stepValid[2] && !(isCustom && customTime !== "" && !customTimeOk) && (
                 <p className="booker__error">
                   {whenMode === "custom"
                     ? `Pick a day and a start time between ${earliest} and ${latest}.`
@@ -667,7 +676,7 @@ export function Booker() {
               {time === "exact" && (
                 <TimeInput value={customTime} onChange={setCustomTime} earliest={earliest} latest={latest} stepMinutes={stepMinutes} />
               )}
-              {tried && !stepValid[2] && (
+              {tried && !stepValid[2] && !(isCustom && customTime !== "" && !customTimeOk) && (
                 <p className="booker__error">
                   {time === "exact"
                     ? `Pick a day and a start time between ${earliest} and ${latest}.`
@@ -950,7 +959,7 @@ function TimeInput({
       />
       {bad && (
         <p className="booker__error">
-          Choose a start time between {earliest} and {latest}, on the quarter hour (e.g. 09:15), Monday to Saturday.
+          Choose a start time between {earliest} and {latest}.
         </p>
       )}
     </div>

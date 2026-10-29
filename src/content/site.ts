@@ -208,7 +208,7 @@ export const booking = {
   closedWeekdays: [0] as number[], // 0 = Sunday … 6 = Saturday (closed Sundays)
   // Custom start times customers may request (24h "HH:MM"). Latest start 17:00, confirmed
   // by Zinhle (Oct 2026).
-  customTime: { earliest: "08:00", latest: "17:00", stepMinutes: 15 },
+  customTime: { earliest: "08:00", latest: "17:00", stepMinutes: 1 }, // any minute, e.g. 08:40
   timeWindows: [
     { id: "morning", label: "Morning", detail: "Start 08:00 to 12:00" },
     { id: "afternoon", label: "Afternoon", detail: "Start after 12:00" },
