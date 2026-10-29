@@ -634,9 +634,14 @@ export function Booker() {
                   <p>
                     <strong>Optional:</strong> send us your list now so we bring the right things.
                   </p>
-                  <button type="button" className="btn btn--ghost" onClick={next}>
-                    Send my list (optional)
-                  </button>
+                  <div className="booked-done__actions">
+                    <Link className="btn btn--primary" href="/">
+                      Back to home
+                    </Link>
+                    <button type="button" className="btn btn--ghost" onClick={next}>
+                      Send my list (optional)
+                    </button>
+                  </div>
                 </div>
               )}
               <p className="booker__hint booker__hint--after">
@@ -859,6 +864,13 @@ export function Booker() {
                     ? `Send us this list so we know what to bring. We'll confirm the final price. ${policies.deposit}`
                     : `This is a booking request. We'll confirm the time and final price before the clean. ${policies.deposit}`}
               </p>
+              {sent && (
+                <p>
+                  <Link className="btn btn--ghost" href="/">
+                    Back to home
+                  </Link>
+                </p>
+              )}
             </section>
           )}
         </div>
