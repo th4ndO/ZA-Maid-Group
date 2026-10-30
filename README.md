@@ -76,10 +76,8 @@ Zinhle's answers are in (hours Mon–Sat 08:00–18:00, anywhere in Pretoria, pr
 
 ## Online booking
 
-Booking a slot on Zinhle's Google booking page *is* the booking: Google emails her and the
-customer. After ticking "I've booked my time", sending the list (services, address, price) on
-WhatsApp/email is optional, so Zinhle follows up for details when it isn't sent. Make sure her
-Google booking form asks for a phone number. Custom-time requests still have to be sent.
+After booking a slot on Zinhle's Google page, customers must still send the booking (WhatsApp, or
+email) so ZA Maid sees the type of clean, address and price. Google only passes on the time.
 
 Step 4 lets customers pick a preferred cleaner (photos from the team list). It's a request: the
 WhatsApp message says "Preferred cleaner: … (if available, please confirm)". Turn it off with

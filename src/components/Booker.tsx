@@ -149,7 +149,8 @@ export function Booker() {
   const { earliest, latest, stepMinutes } = booking.customTime;
   const customTimeOk = timeAllowed(customTime, earliest, latest, stepMinutes);
   const isCustom = (google && whenMode === "custom") || (!google && time === "exact");
-  // Booked a slot on Google: that's the booking. Sending the list afterwards is optional.
+  // Booked a slot on Google: the time is held, but the customer still sends the booking on
+  // WhatsApp so ZA Maid sees what to clean, where and the price (Google only passes on the time).
   const slotsBooked = !!google && whenMode === "slots" && booked;
 
   const stepValid = [
@@ -592,8 +593,8 @@ export function Booker() {
               {embeddable ? (
                 <>
                   <p className="booker__hint">
-                    These are our real open slots. Choose one and add your details: that books it, and we&apos;re told
-                    straight away.
+                    These are our real open slots. Choose one and add your details, then come back here to send us
+                    your booking.
                   </p>
                   <div className="gcal">
                     <iframe src={google} title="ZA Maid Group booking calendar" loading="lazy" />
@@ -610,8 +611,8 @@ export function Booker() {
                 <div className="gcal-link">
                   <CalendarIcon />
                   <p>
-                    Our calendar shows only the times we&apos;re free. Pick one and add your details: that books it,
-                    and we&apos;re told straight away. Then come back to this tab.
+                    Our calendar shows only the times we&apos;re free. Pick one and add your details, then come back to
+                    this tab to send us your booking.
                   </p>
                   <a className="btn btn--primary" href={google} target="_blank" rel="noopener">
                     Choose a time on our calendar
@@ -625,21 +626,15 @@ export function Booker() {
               {booked && (
                 <div className="booked-done" role="status">
                   <p className="booked-done__title">
-                    <CheckIcon /> You&apos;re booked!
+                    <CheckIcon /> Your time is booked. One last step!
                   </p>
                   <p>
-                    Google has emailed you a confirmation and we&apos;ve been notified. We&apos;ll message you to confirm
-                    the price and the deposit. Nothing else is needed.
-                  </p>
-                  <p>
-                    <strong>Optional:</strong> send us your list now so we bring the right things.
+                    Send us your booking on WhatsApp so we know what to clean and where. We&apos;ll confirm the price
+                    and the deposit there.
                   </p>
                   <div className="booked-done__actions">
-                    <Link className="btn btn--primary" href="/">
-                      Back to home
-                    </Link>
-                    <button type="button" className="btn btn--ghost" onClick={next}>
-                      Send my list (optional)
+                    <button type="button" className="btn btn--primary" onClick={next}>
+                      Next: send on WhatsApp
                     </button>
                   </div>
                 </div>
@@ -697,11 +692,11 @@ export function Booker() {
 
           {step === 3 && (
             <section aria-labelledby="b-you">
-              <h2 id="b-you">{slotsBooked ? "Send us your list (optional)" : "Almost done"}</h2>
+              <h2 id="b-you">{slotsBooked ? "Last step: send your booking" : "Almost done"}</h2>
               {slotsBooked && (
                 <>
                   <p className="booker__hint">
-                    You&apos;re already booked. Sending this just tells us what to bring, so we can confirm your price.
+                    Your time is held. Send this so we know what you need cleaned, where, and your price.
                   </p>
                   <div className="field">
                     <label htmlFor="b-booked-when">
@@ -951,7 +946,7 @@ export function Booker() {
               Back
             </button>
           )}
-          {step < STEPS.length - 1 && !(step === 2 && slotsBooked) && (
+          {step < STEPS.length - 1 && (
             <button type="button" className="btn btn--primary" onClick={next}>
               Next: {STEPS[step + 1]}
             </button>
