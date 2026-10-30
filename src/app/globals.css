@@ -2791,9 +2791,9 @@ body:has(.booker) .wa-fab {
 .booked-done {
   margin: 14px 0 6px;
   padding: 16px 18px;
-  border: 1.5px solid #2f8a57;
+  border: 1.5px solid #c27c0e;
   border-radius: 12px;
-  background: #eef8f2;
+  background: #fff6e5;
   color: var(--ink);
   animation: rise 0.3s ease;
 }
@@ -2806,7 +2806,7 @@ body:has(.booker) .wa-fab {
   gap: 8px;
   font-weight: 700;
   font-size: 1.0625rem;
-  color: #1f6b41;
+  color: #8a5300;
 }
 .booked-done__title svg {
   width: 20px;

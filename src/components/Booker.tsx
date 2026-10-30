@@ -593,8 +593,8 @@ export function Booker() {
               {embeddable ? (
                 <>
                   <p className="booker__hint">
-                    These are our real open slots. Choose one and add your details, then come back here to send us
-                    your booking.
+                    These are our real open slots. Choose one, then come back here and{" "}
+                    <strong>send us your booking on WhatsApp (required)</strong>.
                   </p>
                   <div className="gcal">
                     <iframe src={google} title="ZA Maid Group booking calendar" loading="lazy" />
@@ -611,8 +611,8 @@ export function Booker() {
                 <div className="gcal-link">
                   <CalendarIcon />
                   <p>
-                    Our calendar shows only the times we&apos;re free. Pick one and add your details, then come back to
-                    this tab to send us your booking.
+                    Our calendar shows only the times we&apos;re free. Pick one, then come back to this tab and{" "}
+                    <strong>send us your booking on WhatsApp (required)</strong>.
                   </p>
                   <a className="btn btn--primary" href={google} target="_blank" rel="noopener">
                     Choose a time on our calendar
@@ -626,11 +626,11 @@ export function Booker() {
               {booked && (
                 <div className="booked-done" role="status">
                   <p className="booked-done__title">
-                    <CheckIcon /> Your time is booked. One last step!
+                    Not finished yet: you must send your booking
                   </p>
                   <p>
-                    Send us your booking on WhatsApp so we know what to clean and where. We&apos;ll confirm the price
-                    and the deposit there.
+                    Your time is held, but <strong>your clean is only booked once you send it to us on WhatsApp</strong>.
+                    Without it we don&apos;t know what to clean or where, and we can&apos;t confirm.
                   </p>
                   <div className="booked-done__actions">
                     <button type="button" className="btn btn--primary" onClick={next}>
@@ -696,7 +696,8 @@ export function Booker() {
               {slotsBooked && (
                 <>
                   <p className="booker__hint">
-                    Your time is held. Send this so we know what you need cleaned, where, and your price.
+                    <strong>Required:</strong> your clean is only booked once you send this on WhatsApp. It tells us
+                    what to clean, where, and your price.
                   </p>
                   <div className="field">
                     <label htmlFor="b-booked-when">
@@ -856,7 +857,7 @@ export function Booker() {
                     : firstClean && canDiscount && claim !== "already_used"
                     ? "We check the first-clean discount against your number when you send. We keep only a scrambled record of the number, to stop repeat claims."
                     : google
-                    ? `Send us this list so we know what to bring. We'll confirm the final price. ${policies.deposit}`
+                    ? `Your booking is only complete once you press send in WhatsApp. We'll confirm the final price. ${policies.deposit}`
                     : `This is a booking request. We'll confirm the time and final price before the clean. ${policies.deposit}`}
               </p>
               {sent && (
