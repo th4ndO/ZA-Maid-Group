@@ -109,7 +109,7 @@ const faqs: { q: string; a: ReactNode }[] = [
     a: (
       <p>
         When you book online, your booking (name, number, address and what you need cleaned) goes straight to us on
-        WhatsApp or email. It isn&apos;t stored on the website. If you ask for the first-clean discount, we keep a
+        WhatsApp. It isn&apos;t stored on the website. If you ask for the first-clean discount, we keep a
         scrambled record of your cellphone number (not the number itself) so the discount can only be used once.
         Your address is looked up on OpenStreetMap to work out the callout fee. To have your details removed, email{" "}
         <a href={`mailto:${business.email}`}>{business.email}</a>.

@@ -32,7 +32,7 @@ export default function PrivacyPage() {
             <li>
               <strong>Your booking</strong>: your name, cellphone number, address, the services you want, the time you
               choose and any notes. We use it only to arrange, carry out and follow up your clean. The website
-              doesn&apos;t store it. It reaches us as a WhatsApp message or email that you send yourself.
+              doesn&apos;t store it. It reaches us as a WhatsApp message that you send yourself.
             </li>
             <li>
               <strong>Your address or location</strong>: when you search for your address or tap &ldquo;Use my current

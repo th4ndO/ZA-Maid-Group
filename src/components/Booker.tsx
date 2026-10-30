@@ -5,7 +5,6 @@ import { useMemo, useState } from "react";
 import {
   addressCheck,
   booking,
-  business,
   calloutFees,
   firstCleanOffer,
   monthlyPlans,
@@ -19,10 +18,10 @@ import { calloutIndexFor, mapsLink, reverseLookup, roadKmFromBase, searchAddress
 import Image from "next/image";
 import { initials, teamPhotos } from "@/content/team-photos";
 import { claimFirstClean, displayMobile, normaliseSaMobile, type ClaimResult } from "@/lib/discount";
-import { CalendarIcon, CheckIcon, MailIcon, PinIcon, WhatsAppIcon } from "./icons";
+import { CalendarIcon, CheckIcon, PinIcon, WhatsAppIcon } from "./icons";
 
 // Online booking *request*. Visitors build their clean from the real price list, pick a
-// day and a time window, and send it to ZA Maid on WhatsApp (or email). ZA Maid confirms
+// day and a time window, and send it to ZA Maid on WhatsApp. ZA Maid confirms
 // every booking. The booking itself isn't stored by the site; the only thing kept is a
 // hashed phone number when the first-clean discount is claimed (see src/lib/discount.ts).
 
@@ -122,7 +121,7 @@ export function Booker() {
   const [claim, setClaim] = useState<ClaimResult | null>(null);
   const [sending, setSending] = useState(false);
   const [touched, setTouched] = useState({ name: false, phone: false });
-  const [sent, setSent] = useState<null | "whatsapp" | "email">(null);
+  const [sent, setSent] = useState(false);
   const [tried, setTried] = useState(false);
 
   const chosen = items.filter((i) => (qty[i.id] ?? 0) > 0);
@@ -281,7 +280,7 @@ export function Booker() {
 
   // The discount is checked against the phone number when the booking is sent. If this number
   // has had it before, we stop and say so; pressing send again goes ahead without it.
-  async function send(via: "whatsapp" | "email") {
+  async function send() {
     if (!stepValid.every(Boolean) || !mobile) {
       setTried(true);
       const firstBad = stepValid.indexOf(false);
@@ -300,23 +299,20 @@ export function Booker() {
         return;
       }
       // "granted" or "error": carry on (an error sends without the discount, asking ZA Maid to check).
-      sendNow(via, result);
+      sendNow(result);
       return;
     }
-    sendNow(via, claim);
+    sendNow(claim);
   }
 
-  function sendNow(via: "whatsapp" | "email", latestClaim: ClaimResult | null) {
+  function sendNow(latestClaim: ClaimResult | null) {
     // React state hasn't updated yet inside send(), so build the message with the latest claim.
     const text = message(latestClaim);
-    setSent(via);
+    setSent(true);
     // Same-tab navigation: opening a new window after the (async) check would be blocked on phones.
-    window.location.assign(
-      via === "email"
-        ? `mailto:${business.email}?subject=${encodeURIComponent("Booking request")}&body=${encodeURIComponent(text)}`
-        : whatsappLink(text),
-    );
+    window.location.assign(whatsappLink(text));
   }
+
 
   return (
     <div className="booker" id="booker" data-step={step}>
@@ -836,22 +832,19 @@ export function Booker() {
                 <p className="booker__error">Please fill in your name and cellphone number above.</p>
               )}
               <p className="booker__privacy">
-                We use your name, number, address and notes only to arrange your clean. They reach us on WhatsApp or
-                email when you press send there. If you claim the first-clean discount, we keep a scrambled copy of
+                We use your name, number, address and notes only to arrange your clean. They reach us on WhatsApp when
+                you press send there. If you claim the first-clean discount, we keep a scrambled copy of
                 your number so each number gets it once. Please don&apos;t include gate or alarm codes.{" "}
                 <Link href="/privacy">Privacy notice</Link>
               </p>
               <div className="booker__send">
-                <button type="button" className="btn btn--primary" onClick={() => send("whatsapp")} disabled={sending}>
+                <button type="button" className="btn btn--primary" onClick={() => send()} disabled={sending}>
                   <WhatsAppIcon /> {sending ? "Checking…" : "Send booking on WhatsApp"}
-                </button>
-                <button type="button" className="btn btn--ghost" onClick={() => send("email")} disabled={sending}>
-                  <MailIcon /> Send by email
                 </button>
               </div>
               <p className="form__note" aria-live="polite">
                 {sent
-                  ? `Your ${sent === "whatsapp" ? "WhatsApp" : "email app"} should have opened with your booking. Just press send there. We'll confirm the time and final price.`
+                  ? `Your WhatsApp should have opened with your booking. Just press send there. We'll confirm the time and final price.`
                   : isCustom
                     ? `This is a request for your chosen time. We'll confirm the time and final price on WhatsApp. ${policies.deposit}`
                     : firstClean && canDiscount && claim !== "already_used"
