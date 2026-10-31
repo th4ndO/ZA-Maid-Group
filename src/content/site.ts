@@ -84,7 +84,7 @@ export const services: ServiceSummary[] = [
   {
     slug: "deep",
     title: "Deep Cleaning",
-    body: "Couches, mattresses, carpets and the corners that need extra attention.",
+    body: "Couches, mattresses and the corners that need extra attention.",
   },
   {
     slug: "custom",
@@ -94,10 +94,12 @@ export const services: ServiceSummary[] = [
 ];
 
 export type PriceItem = { name: string; price: number };
-export type PriceGroup = { id: string; title: string; items: PriceItem[]; note?: string };
+// available: false hides a whole service everywhere (prices, booker, Google data, photos)
+// without losing its prices. Set it back to true (or delete the line) to bring it back.
+export type PriceGroup = { id: string; title: string; items: PriceItem[]; note?: string; available?: boolean };
 
 // From ZA-Maid_Price-List_Post_1080x1350.png (brand kit, October 2026).
-export const priceGroups: PriceGroup[] = [
+const allPriceGroups: PriceGroup[] = [
   {
     id: "home-cleaning",
     title: "Home cleaning",
@@ -136,6 +138,7 @@ export const priceGroups: PriceGroup[] = [
   {
     id: "carpet-cleaning",
     title: "Carpet cleaning",
+    available: false, // Not offered for now (Zinhle, 31 Oct 2026).
     items: [
       { name: "Wall-to-wall carpet wash", price: 400 },
       { name: "Carpet, per square metre", price: 29 },
@@ -143,6 +146,8 @@ export const priceGroups: PriceGroup[] = [
     note: "Carpets are R100 plus R29 per square metre.",
   },
 ];
+export const priceGroups = allPriceGroups.filter((g) => g.available !== false);
+export const offers = (id: string) => priceGroups.some((g) => g.id === id);
 
 export const monthlyPlans = [
   { name: "2 monthly deep cleans", price: 650, visits: 2 },
@@ -260,9 +265,11 @@ export const team: { name: string; role: string; photo?: TeamPhoto }[] = [
 // src/assets/work and mapped by key in app/page.tsx. Personal photos in shot are blurred;
 // check with the customer before adding new ones.
 export type WorkPhoto = "rug" | "sink" | "desk";
-export const beforeAfter: { photo: WorkPhoto; title: string; before: string; after: string }[] = [
+// A pair tied to a service (`service`) is hidden while that service isn't offered.
+const allBeforeAfter: { photo: WorkPhoto; title: string; before: string; after: string; service?: string }[] = [
   {
     photo: "rug",
+    service: "carpet-cleaning",
     title: "Rug",
     before: "Grubby rug with an ink stain, one corner already cleaned to show the difference",
     after: "The same rug, cleaned all over",
@@ -280,6 +287,7 @@ export const beforeAfter: { photo: WorkPhoto; title: string; before: string; aft
     after: "The same desk, cleared and neatly arranged",
   },
 ];
+export const beforeAfter = allBeforeAfter.filter((p) => !p.service || offers(p.service));
 
 // Services page: photos from one finished full clean (Oct 2026). "After" shots only, so
 // they're shown as a finished clean, not as before & after.

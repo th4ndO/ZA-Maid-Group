@@ -60,7 +60,7 @@ Zinhle's answers are in (hours Mon–Sat 08:00–18:00, anywhere in Pretoria, pr
       FAQ). Banking details are sent by ZA Maid when confirming, not shown on the site.
 - [x] **Discount**: 10% on once-off services only (not monthly plans or the callout fee). A
       monthly-plan-only booking doesn't offer it, so it can't use up the number's claim.
-- [x] **Carpets**: R100 + R29 per m². **Latest custom start**: 17:00.
+- [x] **Carpets**: R100 + R29 per m², but switched off for now (`available: false` on the carpet group in `src/content/site.ts`; this also hides the rug before & after). **Latest custom start**: 17:00.
 - [x] **Base**: Duncan Court, 1226 Park Street, Hatfield (-25.7483, 28.2416). Callout distances
       are measured from here.
 - [x] **Founder story**: approved by Zinhle. **Trained staff**: confirmed.

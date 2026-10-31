@@ -27,12 +27,13 @@ const finishedPhotos: Record<FinishedPhoto, typeof finishedKitchen> = {
 export const metadata: Metadata = {
   title: "Cleaning services & prices in Pretoria",
   description:
-    "ZA Maid Group price list: home cleans from R200, couches, mattresses, carpets, move-in/out cleans and monthly deep-clean plans. Hatfield, Pretoria.",
+    "ZA Maid Group price list: home cleans from R200, couches, mattresses, move-in/out cleans and monthly deep-clean plans. Hatfield, Pretoria.",
   alternates: { canonical: "/services" },
 };
 
 export default function ServicesPage() {
-  const [home, couches, mattress, carpet] = priceGroups;
+  const group = (id: string) => priceGroups.find((g) => g.id === id);
+  const [home, couches, mattress, carpet] = ["home-cleaning", "couches-chairs", "mattress-cleaning", "carpet-cleaning"].map(group);
 
   return (
     <>
@@ -88,10 +89,10 @@ export default function ServicesPage() {
           </div>
 
           <div className="grid grid--2">
-            <PriceCard group={home} />
+            {home && <PriceCard group={home} />}
             <div className="price-stack">
-              <PriceCard group={couches} />
-              <PriceCard group={mattress} />
+              {couches && <PriceCard group={couches} />}
+              {mattress && <PriceCard group={mattress} />}
             </div>
           </div>
 
@@ -108,9 +109,11 @@ export default function ServicesPage() {
             <p>{monthlyPlanNote}</p>
           </div>
 
-          <div className="section-foot">
-            <PriceCard group={carpet} />
-          </div>
+          {carpet && (
+            <div className="section-foot">
+              <PriceCard group={carpet} />
+            </div>
+          )}
 
           <div className="card section-foot" id="callout-fee">
             <div className="price-card">
