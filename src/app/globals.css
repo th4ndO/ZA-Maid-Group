@@ -2818,3 +2818,47 @@ body:has(.booker) .wa-fab {
   gap: 10px;
   margin-top: 4px;
 }
+
+/* Home: customer reviews (shown only once there are real ones). */
+.review {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.review__stars {
+  margin: 0;
+  color: #e0a526;
+  letter-spacing: 0.12em;
+  font-size: 1.0625rem;
+}
+.review blockquote {
+  margin: 0;
+  flex: 1;
+}
+.review blockquote p {
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: var(--ink);
+}
+.review figcaption strong {
+  display: block;
+  color: var(--navy);
+}
+.review figcaption span {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.reviews__more {
+  margin: 20px 0 0;
+  color: var(--muted);
+}
+.reviews__more a {
+  font-weight: 600;
+}

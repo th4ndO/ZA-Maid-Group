@@ -297,3 +297,10 @@ export const finishedClean: { photo: FinishedPhoto; title: string; alt: string }
   { photo: "bathroom", title: "Bathroom", alt: "Clean bathroom with a shining basin and toilet" },
   { photo: "shower", title: "Shower", alt: "Clean shower with clear glass and fresh tiles" },
 ];
+
+// Customer reviews (home page). Real words only, copied exactly from the customer, with their OK to
+// show their first name. The section stays hidden until this list has at least one review.
+// stars: only if the customer gave a rating themselves (1–5); otherwise leave it out.
+// e.g. { quote: "…", name: "Thandi", area: "Hatfield", service: "Deep clean", stars: 5 }
+export type Review = { quote: string; name: string; area?: string; service?: string; stars?: number };
+export const reviews: Review[] = [];

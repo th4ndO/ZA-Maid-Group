@@ -17,6 +17,7 @@ import {
   monthlyPlans,
   priceGroups,
   rand,
+  reviews,
   services,
   whatsappLink,
   type WorkPhoto,
@@ -127,6 +128,39 @@ export default function Home() {
           </AutoCarousel>
         </div>
       </section>
+
+      {reviews.length > 0 && (
+        <section className="section" aria-labelledby="reviews-title">
+          <div className="wrap">
+            <div className="section-head">
+              <p className="label">Reviews</p>
+              <h2 id="reviews-title">What our customers say</h2>
+            </div>
+            <AutoCarousel className="grid grid--3 reviews" label="Customer reviews">
+              {reviews.map((r) => (
+                <figure key={r.name + r.quote.slice(0, 20)} className="review">
+                  {r.stars && (
+                    <p className="review__stars" role="img" aria-label={`${r.stars} out of 5 stars`}>
+                      {"★".repeat(r.stars)}
+                    </p>
+                  )}
+                  <blockquote>
+                    <p>&ldquo;{r.quote}&rdquo;</p>
+                  </blockquote>
+                  <figcaption>
+                    <strong>{r.name}</strong>
+                    {(r.area || r.service) && <span>{[r.service, r.area].filter(Boolean).join(" · ")}</span>}
+                  </figcaption>
+                </figure>
+              ))}
+            </AutoCarousel>
+            <p className="reviews__more">
+              Had a clean with us?{" "}
+              <a href={whatsappLink("Hi ZA Maid Group, here's my review: ")}>Send us your review on WhatsApp</a>
+            </p>
+          </div>
+        </section>
+      )}
 
       <section className="section section--mist">
         <div className="wrap split split--wide-left">

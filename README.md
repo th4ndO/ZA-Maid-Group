@@ -74,6 +74,12 @@ Zinhle's answers are in (hours Mon–Sat 08:00–18:00, anywhere in Pretoria, pr
       in a new tab from step 3. For the calendar to show *inside* the page, use the full link from
       Google Calendar → the schedule → Share → **Website embed** (a `calendar.google.com/…` URL).
 
+## Reviews
+
+The home page has a reviews section that stays hidden until `reviews` in `src/content/site.ts` has
+an entry. Only real reviews, word for word, with the customer's OK to use their first name; add
+`stars` only if they gave a rating.
+
 ## Online booking
 
 After booking a slot on Zinhle's Google page, customers must still send the booking (WhatsApp, or
