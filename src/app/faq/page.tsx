@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { CtaSection, PageHead, Placeholder } from "@/components/bits";
-import { business, calloutFees, firstCleanOffer, monthlyPlanNote, policies, rand } from "@/content/site";
+import { business, calloutFees, firstCleanOffer, monthlyPlanNote, policies, rand, reviewMessage, whatsappLink } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Cleaning FAQ & areas we cover in Pretoria",
@@ -103,6 +103,15 @@ const faqs: { q: string; a: ReactNode }[] = [
   {
     q: "What if I'm not happy with the clean?",
     a: <p>{policies.satisfaction}</p>,
+  },
+  {
+    q: "How can I leave a review?",
+    a: (
+      <p>
+        We&apos;d love to hear how your clean went. <a href={whatsappLink(reviewMessage)}>Send us your review on
+        WhatsApp</a>. With your OK, we may show it on this website with your first name only.
+      </p>
+    ),
   },
   {
     q: "What do you do with my details?",

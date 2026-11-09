@@ -17,6 +17,7 @@ import {
   monthlyPlans,
   priceGroups,
   rand,
+  reviewMessage,
   reviews,
   services,
   whatsappLink,
@@ -156,7 +157,7 @@ export default function Home() {
             </AutoCarousel>
             <p className="reviews__more">
               Had a clean with us?{" "}
-              <a href={whatsappLink("Hi ZA Maid Group, here's my review: ")}>Send us your review on WhatsApp</a>
+              <a href={whatsappLink(reviewMessage)}>Send us your review on WhatsApp</a>
             </p>
           </div>
         </section>

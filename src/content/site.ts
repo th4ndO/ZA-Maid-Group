@@ -304,3 +304,8 @@ export const finishedClean: { photo: FinishedPhoto; title: string; alt: string }
 // e.g. { quote: "…", name: "Thandi", area: "Hatfield", service: "Deep clean", stars: 5 }
 export type Review = { quote: string; name: string; area?: string; service?: string; stars?: number };
 export const reviews: Review[] = [];
+
+// "Leave a review" links (footer, FAQ, reviews section) open WhatsApp with this, so the customer's
+// answer to the last line is their OK (or not) to show it on the site.
+export const reviewMessage =
+  "Hi ZA Maid Group, here's my review:\n\n\n\nYou may show it on your website with my first name: Yes / No";

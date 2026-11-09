@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { business, nav, whatsappLink } from "@/content/site";
+import { business, nav, reviewMessage, whatsappLink } from "@/content/site";
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
@@ -38,6 +38,9 @@ export function SiteFooter() {
             <ul>
               <li>
                 <a href={whatsappLink()}>WhatsApp {business.phoneDisplay}</a>
+              </li>
+              <li>
+                <a href={whatsappLink(reviewMessage)}>Leave a review</a>
               </li>
               <li>
                 <a href={`tel:${business.phoneIntl}`}>Call {business.phoneDisplay}</a>
